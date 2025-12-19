@@ -1,0 +1,19 @@
+# Nature Marketplace - robots.txt
+# https://naturemarketplace.com/robots.txt
+
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /login
+Disallow: /register
+Disallow: /cart
+Disallow: /checkout
+Disallow: /favorites
+Disallow: /tracker
+Disallow: /tracker/*
+Disallow: /profile
+Disallow: /api/*
+
+# Sitemap
+Sitemap: https://naturemarketplace.com/sitemap.xml

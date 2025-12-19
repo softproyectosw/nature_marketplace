@@ -1,0 +1,129 @@
+# =============================================================================
+# Nature Marketplace - Git Ignore Configuration
+# =============================================================================
+
+# =============================================================================
+# ENVIRONMENT & SECRETS (CRITICAL - Never commit these)
+# =============================================================================
+.env
+.env.local
+.env.*.local
+.env.production
+*.pem
+*.key
+
+# =============================================================================
+# PYTHON / DJANGO
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+# lib/ - Removed: conflicts with frontend/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# =============================================================================
+# NODE.JS / NEXT.JS
+# =============================================================================
+node_modules/
+.next/
+out/
+.nuxt/
+dist/
+
+# Next.js build output
+.vercel
+
+# NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# =============================================================================
+# IDE & EDITORS
+# =============================================================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# OS FILES
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.bak
+
+# =============================================================================
+# DOCKER
+# =============================================================================
+docker-compose.override.yml
+
+# =============================================================================
+# TESTING
+# =============================================================================
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# =============================================================================
+# MISC
+# =============================================================================
+*.tmp
+*.temp
+*.cache
+.cache/

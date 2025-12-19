@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Bilingual SEO Meta Tags -->
+    <title>Nature Wellness Marketplace | Bienestar y Naturaleza</title>
+    <meta name="description" content="Book immersive wellness retreats, adopt trees, and buy organic products. Reserva retiros de bienestar, adopta árboles y compra productos orgánicos que ayudan al planeta." />
+    <meta name="keywords" content="wellness, retreats, organic, reforestation, yoga, mindfulness, bienestar, retiros, orgánico, árboles, reforestación, yoga, meditación" />
+    <meta property="og:title" content="Nature Wellness Marketplace | Bienestar y Naturaleza" />
+    <meta property="og:description" content="Healing for you. Healing for the planet. Sanación para ti. Sanación para el planeta." />
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+      
+      /* SVG Drawing Animation */
+      .draw-path {
+        stroke-dasharray: 1000;
+        stroke-dashoffset: 1000;
+        transition: stroke-dashoffset 2s ease-out;
+      }
+      .draw-path.animate {
+        stroke-dashoffset: 0;
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#30e87a",
+              "background-light": "#f6f8f7",
+              "background-dark": "#112117",
+              "olive-green": "#6B8E23", 
+              "olive-light": "#93C8A8",
+              "navy-blue": "#001f3f",
+              "light-blue": "#89cff0",
+              "nude": "#f5f5dc",
+              "terra": "#e0a387",
+              "dark-card": "#1A3123",
+              "wood": "#5D4037",
+              "wood-light": "#8D6E63"
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: { "DEFAULT": "0.375rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" },
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.10.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-background-dark font-display text-white">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

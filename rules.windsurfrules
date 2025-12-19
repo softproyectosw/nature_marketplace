@@ -1,0 +1,589 @@
+# 🌱 Nature Marketplace – MVP
+
+A layered, simple-first marketplace platform connecting people with nature-based products (tree adoptions, retreats, natural medicines) while tracking real-world impact and spiritual/ecosystem journeys.
+
+---
+
+## 🧭 Core Principles (NON‑NEGOTIABLE)
+
+1. **Simple over complex** – build the smallest thing that works.
+2. **Clear rules** – every layer and module has a single responsibility.
+3. **Architecture by layers** – UI ≠ Business ≠ Infrastructure.
+4. **SOLID principles** – especially Single Responsibility & Dependency Inversion.
+5. **Marketplace mindset** – users, products, payments, lifecycle.
+6. **English-first codebase** – translations handled via i18n.
+7. **Type safety & standards** – mypy, flake8, PyPI best practices.
+8. **No platform lock‑in** – Docker-first, infra-agnostic.
+
+---
+
+## 🧱 Architecture Overview (Layered)
+
+```
+Cloudflare (DNS, SSL, WAF)
+        ↓
+Next.js (Presentation & App UI)
+        ↓
+Django (Business Logic / Domain)
+        ↓
+Supabase (Postgres, Auth, Storage)
+        ↓
+Stripe (Payments)
+```
+
+Each layer can evolve independently.
+
+---
+
+## 🧩 Tech Stack
+
+### Frontend (Presentation Layer)
+
+- **Next.js (App Router)**
+- TypeScript
+- Tailwind CSS
+- i18n (EN default, ES secondary)
+
+### Backend (Domain Layer)
+
+- **Django** (API-first)
+- Django REST Framework
+- Python 3.11+
+
+### Infrastructure
+
+- **Supabase** – Auth, Postgres, Storage
+- **Stripe** – Payments
+- **Cloudflare** – DNS, SSL, basic security
+
+### Dev & Quality
+
+- Docker / Docker Compose
+- mypy (static typing)
+- flake8 (linting)
+- black (formatting)
+- isort (imports)
+
+---
+
+## 📂 Repository Structure
+
+```
+root/
+├─ frontend/              # Next.js app
+│  ├─ app/
+│  │  ├─ (public)/        # SEO pages
+│  │  ├─ (auth)/          # Login / Register
+│  │  ├─ (dashboard)/     # Private user area
+│  ├─ i18n/
+│  └─ middleware.ts
+│
+├─ backend/               # Django project
+│  ├─ core/               # Domain logic
+│  ├─ users/
+│  ├─ products/
+│  ├─ orders/
+│  ├─ payments/
+│  └─ config/
+│
+├─ docker/
+├─ docker-compose.yml
+└─ README.md
+```
+
+---
+
+## 🧠 Domain‑Driven Apps (Django)
+
+Each app represents a **business concept**, not a technical concern.
+
+- `users` – profiles, roles (user, NGO, admin)
+- `products` – nature products (trees, retreats, medicines)
+- `orders` – carts, purchases, states
+- `payments` – Stripe integration, webhooks
+- `ecosystems` – tree adoption progress, impact tracking
+
+---
+
+## 🔄 User Flow (Marketplace Journey)
+
+### 1. Welcome & Inspiration
+
+**Public Page**
+
+- Magical, nature‑centric welcome
+- Spiritual & healing tone
+- SEO‑optimized
+
+### 2. Discover Nature's Offerings
+
+**Public Product Discovery**
+
+- Browse nature products
+- Categories: Trees, Retreats, Medicines
+- Search & filters
+
+### 3. Product Detail View
+
+**Public Product Page**
+
+- High‑quality imagery
+- Healing & spiritual description
+- Price & impact explanation
+
+### 4. Cart & Checkout
+
+**Authenticated Flow**
+
+- Review items
+- Secure checkout (Stripe)
+- Clear, calm UX
+
+### 5. User Profile & Ecosystem Dashboard
+
+**Private Dashboard**
+
+- Order history
+- Adopted tree progress (real‑time)
+- Impact indicators
+- Nature tracks & content
+
+This flow must feel:
+
+> *Easy, happy, chill, fresh, inviting, magical, and deeply connected to nature.*
+
+---
+
+## 🔍 SEO Strategy (NON‑NEGOTIABLE)
+
+SEO is a **core business requirement**, not an afterthought. The platform must be discoverable by search engines for nature products, impact stories, and ecosystem pages.
+
+### 🎯 SEO Goals
+
+- Index all public nature products (trees, retreats, medicines)
+- Rank for impact‑driven and nature‑related keywords
+- Preserve SEO while the app grows
+- Never expose private or sensitive pages
+
+---
+
+### 🌐 Public SEO Pages (Next.js)
+
+Located under:
+
+```
+app/(public)/
+```
+
+These pages **must be server‑rendered (SSR/SSG)** and indexable.
+
+Examples:
+
+- `/` – Home / Inspiration
+- `/products` – Nature marketplace
+- `/products/tree/[slug]`
+- `/products/retreat/[slug]`
+- `/impact`
+- `/ngos`
+
+---
+
+### 🧠 Metadata Rules
+
+Every public page must define metadata:
+
+```ts
+export const metadata = {
+  title: "Adopt a Tree | Nature Marketplace",
+  description: "Adopt trees, support ecosystems, and track real‑world impact.",
+}
+```
+
+Rules:
+
+- Unique title per page
+- Human‑readable descriptions
+- English default, localized via i18n
+
+---
+
+### 🧬 Structured Data (Schema.org)
+
+Use JSON‑LD for:
+
+- Products
+- Organizations (NGOs)
+- Breadcrumbs
+
+Example (Product):
+
+- name
+- description
+- price
+- currency
+- image
+- impact category
+
+---
+
+### 🗺️ Sitemap & Robots
+
+#### `robots.txt`
+
+```
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+```
+
+#### Sitemap
+
+- Auto‑generated from public routes
+- Includes product and impact pages
+
+---
+
+### 🚫 Non‑Indexable Pages
+
+The following must **never** be indexed:
+
+- Auth pages
+- Dashboard
+- Checkout
+- API routes
+
+Enforced via:
+
+- `robots: { index: false }`
+- robots.txt
+
+---
+
+### 🖼️ Images & Performance
+
+- Use optimized images (WebP where possible)
+- Alt text is mandatory for all images
+- Lazy loading by default
+
+---
+
+### ⚡ Performance & Core Web Vitals
+
+SEO requires:
+
+- Fast LCP
+- Minimal JS on public pages
+- Server Components preferred
+
+Avoid:
+
+- Client‑only rendering for SEO pages
+- Blocking scripts
+
+---
+
+### 🌍 International SEO
+
+- Default locale: `en`
+- Secondary locale: `es`
+- Correct `hreflang` tags
+- Same content, localized copy
+
+---
+
+### 📈 Measurement
+
+- Google Search Console
+- Cloudflare analytics (basic)
+- Track impressions, clicks, indexed pages
+
+---
+
+## 🔐 Public vs Private Pages (Next.js)
+
+- `(public)` → indexable, SEO
+- `(auth)` → login / register (no index)
+- `(dashboard)` → protected, authenticated
+
+Middleware enforces access rules.
+
+---
+
+## 🌍 Internationalization (i18n)
+
+- **Default language:** English
+- **Secondary:** Spanish
+
+Frontend:
+
+- `next-intl` or equivalent
+
+Backend:
+
+- Django i18n (`gettext`)
+
+All business logic and code **must be written in English**.
+
+---
+
+## 🧪 Code Quality Rules (Backend)
+
+### Static Typing
+
+```bash
+mypy backend/
+```
+
+### Linting
+
+```bash
+flake8 backend/
+```
+
+### Formatting
+
+```bash
+black backend/
+isort backend/
+```
+
+### Rules
+
+- No function without a clear responsibility
+- No fat models
+- No business logic in views
+- Services > utils
+
+---
+
+## 🐳 Docker Setup
+
+Everything runs via Docker.
+
+```bash
+docker compose up --build
+```
+
+Services:
+
+- frontend (Next.js)
+- backend (Django)
+- nginx (optional)
+
+Supabase & Stripe run externally.
+
+---
+
+## 🔒 Security Baseline (MVP)
+
+- HTTPS via Cloudflare
+- Stripe webhook signature verification
+- Supabase Row Level Security (RLS)
+- Django `DEBUG=False`
+- Secrets via environment variables
+
+---
+
+## 🚀 MVP Scope (Validation First)
+
+### Included
+
+- User registration
+- Product browsing
+- Tree adoption purchase
+- Payment confirmation
+- User dashboard
+
+### Deferred (Later)
+
+- Background jobs (Celery)
+- Advanced analytics
+- Notifications system
+- Mobile app
+
+---
+
+## 🧠 Guiding Philosophy
+
+> **Validate the problem before scaling the solution.**
+
+This project favors clarity, calm UX, and real‑world impact over technical vanity.
+
+---
+
+## ✅ Definition of Done (MVP)
+
+- A user can adopt a tree
+- A payment is processed
+- Progress is visible
+- Google can index public pages
+- Costs stay minimal
+
+---
+
+🌿 Build with intention. Ship with simplicity. Grow with nature.
+
+---
+
+# 📘 Functional Specification – Nature Wellness Marketplace
+
+This section defines **business functionality and user experience requirements**. It complements the architectural rules above and must be respected by all implementations.
+
+---
+
+## 1. Business Requirements
+
+### 1.1 Vision & Value Proposition
+
+- **Concept**: A hybrid marketplace combining:
+
+  - E‑commerce (organic & wellness products)
+  - Wellness tourism (retreats)
+  - Climate action (tree adoption)
+
+- **Brand Identity**: **Eco‑Luxury**
+
+  - Dark, sophisticated UI
+  - Forest‑night inspired palette
+  - Glassmorphism, blur, soft glows
+  - Modern sans‑serif typography
+
+- **Primary KPIs**:
+
+  - Conversion Rate (visitor → buyer/adopter)
+  - Retention (users returning to track trees)
+  - Ecological Impact (CO₂ offset, trees planted)
+
+---
+
+## 1.2 Functional Modules
+
+### A. Authentication & Gamification
+
+- **Animated Password Growth**
+
+  - 1–3 chars → Seed
+  - 4–7 chars → Sprout
+  - 8+ chars → Young Tree
+
+- **Social Login**
+
+  - Google OAuth (initially simulated)
+
+- **User Levels (Green Points)**
+
+  - Seed Planter
+  - Earth Guardian
+  - Forest Master
+
+---
+
+### B. Catalog & Discovery
+
+- Smart search by category:
+
+  - Trees
+  - Retreats
+  - Products
+
+- Quick navigation chips (no page reload)
+
+- Featured & New Arrivals (rule‑based, simulated ranking)
+
+---
+
+### C. Wishlist (Favorites)
+
+- Persisted during session (React Context)
+- Instant visual feedback on like
+- Empty state CTA → redirect to catalog
+
+---
+
+### D. Tree Tracker (Impact Module)
+
+- Immersive dashboard experience
+
+- Satellite‑style map with fixed GPS
+
+- Immutable lifecycle timeline:
+
+  - Planted
+  - Germinated
+  - First Photo
+  - Carbon Audit
+  - Annual Maintenance
+
+- Certificate download (PDF – simulated)
+
+---
+
+## 1.3 Non‑Functional Requirements
+
+- **Performance**: FCP < 1.5s
+- **Accessibility**: WCAG 2.1 AA
+- **Responsiveness**: Mobile‑first
+- **Frontend Stack**: React 19, TypeScript, Tailwind
+
+---
+
+## 2. User Journeys
+
+### 2.1 Adoption Flow (Hero Journey)
+
+1. Landing → emotional connection
+2. Register → animated password tree
+3. Home → featured adoption
+4. Details → impact & location
+5. Cart → review
+6. Checkout → Stripe payment
+7. Profile → tree appears in "My Forest"
+
+---
+
+### 2.2 Retention Loop (Monitoring)
+
+1. User returns
+2. Opens profile
+3. Tracks a tree
+4. Views updates, photos, map
+5. Shares or downloads certificate
+
+---
+
+## 3. Core Data Models (Reference)
+
+> These schemas guide both frontend typing and backend domain models.
+
+- User & Profile
+- Product & Category
+- Adoption & Ecosystem
+- Cart & Order
+
+(Implementation must align with Supabase + Django models.)
+
+---
+
+## 4. Frontend Architecture (Conceptual)
+
+- **Providers**: Global state (catalog, cart, favorites)
+- **Screens**: Route‑level views
+- **UI Components**: Presentational only
+- **Routing**: Layout‑based, role‑aware
+
+Business logic **never lives in UI components**.
+
+---
+
+## 📌 Final Rule
+
+> This document defines **what the product is**. The previous sections define **how it is built**.
+
+Both must remain aligned at all times.
+
+
+
+
+avoid usign this for comments     # ==============================, prefer single coments
