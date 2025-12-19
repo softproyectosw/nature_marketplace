@@ -17,10 +17,8 @@ interface ProductPageProps {
 async function getProduct(slug: string) {
   try {
     const res = await fetch(`${API_URL}/api/products/${slug}/`, {
-      next: { revalidate: 60 },
-      cache: 'no-store', // Disable cache for debugging
+      cache: 'no-store',
     });
-    console.log(`Fetching product ${slug} from ${API_URL}, status: ${res.status}`);
     if (!res.ok) return null;
     return res.json();
   } catch (error) {
