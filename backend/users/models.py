@@ -242,3 +242,37 @@ class UserBadge(models.Model):
     
     def __str__(self) -> str:
         return f"{self.user_profile.display_name} - {self.badge.name}"
+
+
+class UserFavorite(models.Model):
+    """
+    User favorite products.
+    
+    Tracks products that users have marked as favorites.
+    """
+    
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        help_text='The user who favorited this product'
+    )
+    product = models.ForeignKey(
+        'products.Product',
+        on_delete=models.CASCADE,
+        related_name='favorited_by',
+        help_text='The product that was favorited'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text='When the product was favorited'
+    )
+    
+    class Meta:
+        verbose_name = 'User Favorite'
+        verbose_name_plural = 'User Favorites'
+        unique_together = ['user', 'product']
+        ordering = ['-created_at']
+    
+    def __str__(self) -> str:
+        return f"{self.user.username} - {self.product.title}"

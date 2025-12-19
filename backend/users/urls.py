@@ -14,6 +14,8 @@ from .views import (
     UserBadgesView,
     AllBadgesView,
     FullProfileView,
+    UserFavoritesView,
+    UserFavoriteDetailView,
 )
 
 app_name = 'users'
@@ -33,4 +35,8 @@ urlpatterns = [
     # Badges
     path('badges/', UserBadgesView.as_view(), name='user-badges'),
     path('badges/all/', AllBadgesView.as_view(), name='all-badges'),
+    
+    # Favorites
+    path('favorites/', UserFavoritesView.as_view(), name='favorites'),
+    path('favorites/<int:product_id>/', UserFavoriteDetailView.as_view(), name='favorite-detail'),
 ]

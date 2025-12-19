@@ -7,7 +7,7 @@ These serializers handle data transformation between Python objects and JSON.
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from .models import UserProfile, Badge, UserBadge
+from .models import UserProfile, Badge, UserBadge, UserFavorite
 
 User = get_user_model()
 
@@ -177,3 +177,25 @@ class FullUserProfileSerializer(serializers.Serializer):
     profile = UserProfileSerializer()
     badges = UserBadgeSerializer(many=True)
     stats = UserStatsSerializer()
+
+
+class UserFavoriteSerializer(serializers.ModelSerializer):
+    """Serializer for UserFavorite model."""
+    
+    product_id = serializers.IntegerField(source='product.id', read_only=True)
+    product_title = serializers.CharField(source='product.title', read_only=True)
+    product_slug = serializers.CharField(source='product.slug', read_only=True)
+    
+    class Meta:
+        model = UserFavorite
+        fields = ['id', 'product_id', 'product_title', 'product_slug', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class FavoriteIdsSerializer(serializers.Serializer):
+    """Serializer for list of favorite product IDs."""
+    
+    product_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        help_text='List of product IDs'
+    )

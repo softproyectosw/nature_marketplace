@@ -4,16 +4,9 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/layout';
 import { BottomNav } from '@/components/ui';
-import { FavoriteButton } from '@/components/products';
+import { FavoriteButton, getLocalFavorites } from '@/components/products';
 import { AddToCartButton } from '@/components/cart';
-import { getProductBySlug, Product } from '@/lib/api/products';
-
-// Get favorites from localStorage
-function getFavoriteIds(): number[] {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem('favorites');
-  return stored ? JSON.parse(stored) : [];
-}
+import { getProducts, Product } from '@/lib/api/products';
 
 // Helper to get product image
 function getProductImage(product: Product): string {
@@ -36,37 +29,51 @@ function getPriceLabel(product: Product): string {
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Product[]>([]);
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   console.log('[FavoritesPage] Component rendered');
 
-  useEffect(() => {
-    console.log('[FavoritesPage] useEffect running');
-    async function loadFavorites() {
-      const ids = getFavoriteIds();
-      console.log('[FavoritesPage] Favorite IDs from localStorage:', ids);
-      if (ids.length === 0) {
-        console.log('[FavoritesPage] No favorites, setting loading false');
-        setIsLoading(false);
-        return;
-      }
+  // Load favorite products
+  const loadFavorites = async () => {
+    console.log('[FavoritesPage] loadFavorites running');
+    const ids = getLocalFavorites();
+    console.log('[FavoritesPage] Favorite IDs from localStorage:', ids);
+    setFavoriteIds(ids);
+    
+    if (ids.length === 0) {
+      console.log('[FavoritesPage] No favorites, setting loading false');
+      setFavorites([]);
+      setIsLoading(false);
+      return;
+    }
 
-      // For now, we'll show empty state since we don't have a bulk fetch endpoint
-      // In production, you'd fetch products by IDs
-      console.log('[FavoritesPage] Setting loading false');
+    try {
+      // Fetch all products and filter by favorite IDs
+      const data = await getProducts({});
+      const allProducts = data.results || [];
+      const favoriteProducts = allProducts.filter(p => ids.includes(p.id));
+      console.log('[FavoritesPage] Filtered favorite products:', favoriteProducts.length);
+      setFavorites(favoriteProducts);
+    } catch (err) {
+      console.error('[FavoritesPage] Error loading products:', err);
+      setFavorites([]);
+    } finally {
       setIsLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadFavorites();
 
-    // Listen for storage changes
-    const handleStorage = () => {
+    // Listen for favorites updates
+    const handleUpdate = () => {
+      console.log('[FavoritesPage] Favorites updated event received');
       loadFavorites();
     };
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('favoritesUpdated', handleStorage);
+    window.addEventListener('favoritesUpdated', handleUpdate);
     return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('favoritesUpdated', handleStorage);
+      window.removeEventListener('favoritesUpdated', handleUpdate);
     };
   }, []);
 

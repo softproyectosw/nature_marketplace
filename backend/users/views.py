@@ -20,9 +20,13 @@ from .serializers import (
     BadgeSerializer,
     UserBadgeSerializer,
     UserStatsSerializer,
+    UserFavoriteSerializer,
+    FavoriteIdsSerializer,
 )
 from .services import user_profile_service, gamification_service
+from .models import UserFavorite
 from ecosystems.services import ecosystem_service
+from products.models import Product
 
 
 class UserProfileView(APIView):
@@ -264,3 +268,111 @@ class FullProfileView(APIView):
                 'total_co2_offset_kg': forest_stats['total_co2_offset_kg'],
             }
         })
+
+
+class UserFavoritesView(APIView):
+    """
+    User favorites list endpoint.
+    
+    Get all favorites or sync favorites from client.
+    """
+    
+    permission_classes = [IsAuthenticated]
+    
+    @extend_schema(
+        summary="Get user favorites",
+        description="Get all products favorited by the authenticated user.",
+        responses={200: FavoriteIdsSerializer},
+        tags=["Users"]
+    )
+    def get(self, request):
+        """Get user's favorite product IDs."""
+        favorites = UserFavorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+        return Response({'product_ids': list(favorites)})
+    
+    @extend_schema(
+        summary="Sync favorites",
+        description="Sync favorites from client (merge with existing).",
+        request=FavoriteIdsSerializer,
+        responses={200: FavoriteIdsSerializer},
+        tags=["Users"]
+    )
+    def post(self, request):
+        """Sync favorites from client."""
+        serializer = FavoriteIdsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        product_ids = serializer.validated_data['product_ids']
+        
+        # Get existing favorites
+        existing = set(UserFavorite.objects.filter(user=request.user).values_list('product_id', flat=True))
+        
+        # Add new favorites
+        new_ids = set(product_ids) - existing
+        for product_id in new_ids:
+            try:
+                product = Product.objects.get(id=product_id, is_active=True)
+                UserFavorite.objects.get_or_create(user=request.user, product=product)
+            except Product.DoesNotExist:
+                pass
+        
+        # Return merged list
+        all_favorites = UserFavorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+        return Response({'product_ids': list(all_favorites)})
+
+
+class UserFavoriteDetailView(APIView):
+    """
+    Single favorite endpoint.
+    
+    Add or remove a product from favorites.
+    """
+    
+    permission_classes = [IsAuthenticated]
+    
+    @extend_schema(
+        summary="Add to favorites",
+        description="Add a product to the user's favorites.",
+        responses={201: UserFavoriteSerializer},
+        tags=["Users"]
+    )
+    def post(self, request, product_id):
+        """Add product to favorites."""
+        try:
+            product = Product.objects.get(id=product_id, is_active=True)
+        except Product.DoesNotExist:
+            return Response(
+                {'error': 'Product not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        favorite, created = UserFavorite.objects.get_or_create(
+            user=request.user,
+            product=product
+        )
+        
+        serializer = UserFavoriteSerializer(favorite)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        )
+    
+    @extend_schema(
+        summary="Remove from favorites",
+        description="Remove a product from the user's favorites.",
+        responses={204: None},
+        tags=["Users"]
+    )
+    def delete(self, request, product_id):
+        """Remove product from favorites."""
+        deleted, _ = UserFavorite.objects.filter(
+            user=request.user,
+            product_id=product_id
+        ).delete()
+        
+        if deleted:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            {'error': 'Favorite not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
