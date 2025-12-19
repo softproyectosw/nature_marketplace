@@ -17,18 +17,19 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: '/', icon: 'eco', label: 'Discover' },
-  { href: '/favorites', icon: 'favorite', label: 'Favorites', fillOnActive: true },
-  { href: '/sponsor', icon: 'volunteer_activism', label: 'Apadrinar' },
-  { href: '/profile', icon: 'person', label: 'Profile' },
+  { href: '/', icon: 'home', label: 'Inicio' },
+  { href: '/products', icon: 'eco', label: 'Apadrinar' },
+  { href: '/favorites', icon: 'favorite', label: 'Favoritos', fillOnActive: true },
+  { href: '/profile', icon: 'person', label: 'Perfil' },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
 
   const isActive = (path: string) => {
-    if (path === '/') return pathname === '/' || pathname === '/dashboard';
-    return pathname.startsWith(path);
+    if (path === '/') return pathname === '/';
+    if (path === '/products') return pathname.startsWith('/products');
+    return pathname === path || pathname.startsWith(path + '/');
   };
 
   return (

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { BottomNav } from '@/components/ui';
 
 interface CartItem {
   id: number;
@@ -53,7 +54,7 @@ export default function CartPage() {
   const isEmpty = cartItems.length === 0;
 
   return (
-    <div className="min-h-screen bg-background-dark text-white font-display">
+    <div className="min-h-screen bg-background-dark text-white font-display pb-24">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-background-dark/95 backdrop-blur-md border-b border-white/10">
         <div className="max-w-2xl mx-auto px-4 py-4">
@@ -182,6 +183,8 @@ export default function CartPage() {
           </>
         )}
       </main>
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }

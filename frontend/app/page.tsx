@@ -5,19 +5,41 @@ import { useEffect, useRef, useState } from 'react';
 import { FallingLeaves } from '@/components/effects/FallingLeaves';
 import { CartButton } from '@/components/cart';
 import { UserMenu } from '@/components/auth';
+import { getProducts, Product } from '@/lib/api/products';
+import { BottomNav } from '@/components/ui';
 
-/**
- * Landing Page - Welcome to Nature Marketplace
- * 
- * Design based on the original Stitch mockups with:
- * - Full-screen hero with forest background image
- * - Falling leaves effect
- * - Clear CTAs (Explore + Sign In/Sign Up)
- * - Tree growing animation on scroll
- */
+// Helper to get product image
+function getProductImage(product: Product): string {
+  if (product.primary_image) return product.primary_image;
+  const primaryImage = product.gallery?.find(img => img.is_primary);
+  if (primaryImage?.url) return primaryImage.url;
+  if (product.gallery?.[0]?.url) return product.gallery[0].url;
+  return '/images/placeholder-product.jpg';
+}
+
+// Helper to get category slug
+function getCategorySlug(product: Product): string {
+  return product.category?.slug || product.category_slug || 'products';
+}
+
 export default function LandingPage() {
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const treeRef = useRef<HTMLDivElement>(null);
+
+  // Load featured products
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const data = await getProducts({ is_featured: true });
+        setProducts(data.results?.slice(0, 8) || []);
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      }
+    }
+    loadProducts();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +52,21 @@ export default function LandingPage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Carousel navigation
+  const itemsPerView = 4;
+  const maxIndex = Math.max(0, products.length - itemsPerView);
+  const nextSlide = () => setCarouselIndex(prev => prev >= maxIndex ? 0 : prev + 1);
+  const prevSlide = () => setCarouselIndex(prev => prev <= 0 ? maxIndex : prev - 1);
+
+  // Auto-play carousel
+  useEffect(() => {
+    if (products.length === 0) return;
+    const interval = setInterval(() => {
+      setCarouselIndex(prev => prev >= maxIndex ? 0 : prev + 1);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [products.length, maxIndex]);
 
   return (
     <div className="min-h-[200vh] bg-background-dark font-display">
@@ -190,66 +227,75 @@ export default function LandingPage() {
           </div>
         </div>
         
-        {/* Infinite Product Carousel */}
-        <div className="w-full max-w-6xl mx-auto overflow-hidden mt-4">
-          <p className="text-center text-white/50 text-sm mb-4">Explore our products</p>
-          <div className="relative">
-            <div className="flex animate-scroll gap-4">
-              {/* First set of products */}
-              {[
-                { id: 1, title: 'Roble Andino', price: 49, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA57d8-crjcjBcF7YSMwpjlCwOgxjuIMr_-ft7LPHaYWNRZFBtgEyVb6ik914ymF0nlxS0sy3CpfzfuzEg6n1aIgHgZ73mAfGBEHFE5i6ILJCiFjSG582VjSgeNDxH2kRfEKNmuhxFJDH9pQ4jzrpUX3QdM6tdqCNMk-prHTFJ3M52-0YSf8X78H3lFF1fPMb2GeFHr-gQpLKK9qDfefwoYzzcKoXYY0qSipZsvnaY8HN_il1xJdV5q7wirCuBPxSOFwN0EIh4aPV4w', slug: 'trees/roble-andino' },
-                { id: 2, title: 'Ceiba Sagrada', price: 79, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDc1vS64gPJ7mXS0GZZ4J9GV3_vtbWnbqLpusdOe_mhtvKZl9800EWClKpEZdAlyu3an5ggEVNg7N47tWtonYYZ8DmGfRsPJxg0ciMgo7upHpfxUxlArq869hYXzEpwQLC8Uzu2y87lPyuSkSXOHREny1z0SNoRC7BiCi8FS6cOWljPP1Fz_GAVL2S0UTtXUxcLoAZ7YDvoBokf-hWw6QOmnSzCmTLX4xmCnwJ_sCpwPySc0wos40KisRYa9s7E7kq3z9ZHt-09Nghy', slug: 'trees/ceiba-sagrada' },
-                { id: 3, title: 'Bosque Andino', price: 299, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBX4GrNj0sPqAN5xJxaK64uqZpTTEKtSygiiYRmXrZxt4JO1G2-xrHV9g9UNTrwj6087J-dT1TcDXjVvl_uGkXDHj3PTVYgO3CY80SS3Y9jwNPu0bu9BrI3ouI1PJJKYWdOZ25Jbhwev1RIldC_gsZoj8zZEHYsrOLOpaqJBVxN_S_irVlY3NdiYbDtH9TwvmsrbnX9ZVCbvg7r8PJpb1Z8puza8b7nV2J5tQ4s-I_BcPTbVrDW10_XQ8aRtshGzZI-yYRXQhGqYfsy', slug: 'forests/hectarea-bosque-andino' },
-                { id: 4, title: 'Laguna Guatavita', price: 149, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCb7qaFmCmW_aGhTbq42JWuifGkh94nQpfJmiA9_F7aE8mZuTVw1S2ZtiDI9B-5jU0vLKt5IKaOtya60cBgZj2wKfJ3j4IsKyEeBlu1TPRyskyshIO7j0j_BxGAd7hYkVPPU7FTpDe-STzCv0orJsz-2tY9VRCRpR1lvmaocHMDNtF3VpyzQfbrLD7ATHv2_gmJKdZZR6lIv6ypEojiay4KM3doCIohLK-JXcU-pINVpOCYB--Fz29aHoLH9qeX1Teo5j7JmZcnb07j', slug: 'lagoons/laguna-guatavita' },
-                { id: 5, title: 'Retiro Bienestar', price: 850, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-6GUNZKUR7_k_ZGZ0RbbevuXmvn9LOA0ukszskzKq8Qu9DAcS9RnbeRMCxxsDilRqpucyAIDDsCW0VhAIoXYPZY2imaFkgPFz2r5wammp0aiUc_pV6nBF4EpzpYMnoTR9par3UGszUC9mdx5Nfeee2UrRzkdNKqzzvz-N_HZNKBu2me2QX3-WBzBTL9irFLpr6fbBD8cPxjRc2mAWYdNquWY53gmbKoXckcMcyXc7M3OrNBHvmm5DBw_tAB74cN4BB1tFvBUSvJG3', slug: 'experiences/retiro-bienestar-3-dias' },
-                { id: 6, title: 'Baño de Bosque', price: 120, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACuKLVH_fV5X9Ba3rRSCI596oYq9gIAJwfZwaCPJLLvQL38TK2lAk4eXqWihfG9oxG4RHjkiBsZkS8vPB0_DsMoBLSm1R75Z1z-jR1dOawiERZxvG33EqxE3JZpPxhZCoIwTirc1Y9f4xZjfrH8nEEYIOaszbaKxU8AOu-fD_qFXYquavFTeu6NBBQ7DPtJK92GpPJqW5Wqq16dSMhjUWGgcC5iIvA79Um_d-aBeiiih1ft8qT8Lvkf5I4nkzZT5espv4ybCSlTvRq', slug: 'experiences/bano-bosque-guiado' },
-              ].map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/products/${product.slug}`}
-                  className="flex-shrink-0 w-40 group"
+        {/* Product Carousel */}
+        {products.length > 0 && (
+          <div className="w-full max-w-4xl mx-auto mt-8 px-4">
+            <p className="text-center text-white/50 text-sm mb-6">Productos destacados</p>
+            <div className="relative">
+              {/* Navigation Buttons */}
+              <button
+                onClick={prevSlide}
+                className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              >
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+              <button
+                onClick={nextSlide}
+                className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              >
+                <span className="material-symbols-outlined">chevron_right</span>
+              </button>
+
+              {/* Carousel Container */}
+              <div className="overflow-hidden">
+                <div 
+                  className="flex gap-4 transition-transform duration-300 ease-out"
+                  style={{ transform: `translateX(-${carouselIndex * 200}px)` }}
                 >
-                  <div 
-                    className="w-40 h-40 rounded-xl bg-cover bg-center mb-2 group-hover:scale-105 transition-transform duration-300 ring-2 ring-transparent group-hover:ring-primary/50"
-                    style={{ backgroundImage: `url("${product.image}")` }}
+                  {products.map((product) => (
+                    <Link
+                      key={product.id}
+                      href={`/products/${getCategorySlug(product)}/${product.slug}`}
+                      className="flex-shrink-0 w-44 group"
+                    >
+                      <div 
+                        className="w-44 h-44 rounded-xl bg-cover bg-center mb-3 group-hover:scale-105 transition-transform duration-300 ring-2 ring-white/10 group-hover:ring-primary/50"
+                        style={{ backgroundImage: `url("${getProductImage(product)}")` }}
+                      />
+                      <p className="text-white text-sm font-medium truncate group-hover:text-primary transition-colors">
+                        {product.title}
+                      </p>
+                      <p className="text-primary text-sm font-bold">
+                        ${product.price}{product.pricing_type === 'annual' ? '/año' : ''}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dots indicator */}
+              <div className="flex justify-center gap-2 mt-4">
+                {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCarouselIndex(idx)}
+                    className={`w-2 h-2 rounded-full transition-colors ${
+                      idx === carouselIndex ? 'bg-primary' : 'bg-white/30'
+                    }`}
                   />
-                  <p className="text-white text-sm font-medium truncate group-hover:text-primary transition-colors">{product.title}</p>
-                  <p className="text-primary text-sm font-bold">${product.price}</p>
-                </Link>
-              ))}
-              {/* Duplicate for infinite scroll effect */}
-              {[
-                { id: 7, title: 'Roble Andino', price: 49, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA57d8-crjcjBcF7YSMwpjlCwOgxjuIMr_-ft7LPHaYWNRZFBtgEyVb6ik914ymF0nlxS0sy3CpfzfuzEg6n1aIgHgZ73mAfGBEHFE5i6ILJCiFjSG582VjSgeNDxH2kRfEKNmuhxFJDH9pQ4jzrpUX3QdM6tdqCNMk-prHTFJ3M52-0YSf8X78H3lFF1fPMb2GeFHr-gQpLKK9qDfefwoYzzcKoXYY0qSipZsvnaY8HN_il1xJdV5q7wirCuBPxSOFwN0EIh4aPV4w', slug: 'trees/roble-andino' },
-                { id: 8, title: 'Ceiba Sagrada', price: 79, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDc1vS64gPJ7mXS0GZZ4J9GV3_vtbWnbqLpusdOe_mhtvKZl9800EWClKpEZdAlyu3an5ggEVNg7N47tWtonYYZ8DmGfRsPJxg0ciMgo7upHpfxUxlArq869hYXzEpwQLC8Uzu2y87lPyuSkSXOHREny1z0SNoRC7BiCi8FS6cOWljPP1Fz_GAVL2S0UTtXUxcLoAZ7YDvoBokf-hWw6QOmnSzCmTLX4xmCnwJ_sCpwPySc0wos40KisRYa9s7E7kq3z9ZHt-09Nghy', slug: 'trees/ceiba-sagrada' },
-                { id: 9, title: 'Bosque Andino', price: 299, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBX4GrNj0sPqAN5xJxaK64uqZpTTEKtSygiiYRmXrZxt4JO1G2-xrHV9g9UNTrwj6087J-dT1TcDXjVvl_uGkXDHj3PTVYgO3CY80SS3Y9jwNPu0bu9BrI3ouI1PJJKYWdOZ25Jbhwev1RIldC_gsZoj8zZEHYsrOLOpaqJBVxN_S_irVlY3NdiYbDtH9TwvmsrbnX9ZVCbvg7r8PJpb1Z8puza8b7nV2J5tQ4s-I_BcPTbVrDW10_XQ8aRtshGzZI-yYRXQhGqYfsy', slug: 'forests/hectarea-bosque-andino' },
-                { id: 10, title: 'Laguna Guatavita', price: 149, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCb7qaFmCmW_aGhTbq42JWuifGkh94nQpfJmiA9_F7aE8mZuTVw1S2ZtiDI9B-5jU0vLKt5IKaOtya60cBgZj2wKfJ3j4IsKyEeBlu1TPRyskyshIO7j0j_BxGAd7hYkVPPU7FTpDe-STzCv0orJsz-2tY9VRCRpR1lvmaocHMDNtF3VpyzQfbrLD7ATHv2_gmJKdZZR6lIv6ypEojiay4KM3doCIohLK-JXcU-pINVpOCYB--Fz29aHoLH9qeX1Teo5j7JmZcnb07j', slug: 'lagoons/laguna-guatavita' },
-                { id: 11, title: 'Retiro Bienestar', price: 850, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-6GUNZKUR7_k_ZGZ0RbbevuXmvn9LOA0ukszskzKq8Qu9DAcS9RnbeRMCxxsDilRqpucyAIDDsCW0VhAIoXYPZY2imaFkgPFz2r5wammp0aiUc_pV6nBF4EpzpYMnoTR9par3UGszUC9mdx5Nfeee2UrRzkdNKqzzvz-N_HZNKBu2me2QX3-WBzBTL9irFLpr6fbBD8cPxjRc2mAWYdNquWY53gmbKoXckcMcyXc7M3OrNBHvmm5DBw_tAB74cN4BB1tFvBUSvJG3', slug: 'experiences/retiro-bienestar-3-dias' },
-                { id: 12, title: 'Baño de Bosque', price: 120, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACuKLVH_fV5X9Ba3rRSCI596oYq9gIAJwfZwaCPJLLvQL38TK2lAk4eXqWihfG9oxG4RHjkiBsZkS8vPB0_DsMoBLSm1R75Z1z-jR1dOawiERZxvG33EqxE3JZpPxhZCoIwTirc1Y9f4xZjfrH8nEEYIOaszbaKxU8AOu-fD_qFXYquavFTeu6NBBQ7DPtJK92GpPJqW5Wqq16dSMhjUWGgcC5iIvA79Um_d-aBeiiih1ft8qT8Lvkf5I4nkzZT5espv4ybCSlTvRq', slug: 'experiences/bano-bosque-guiado' },
-              ].map((product) => (
-                <Link
-                  key={product.id}
-                  href={`/products/${product.slug}`}
-                  className="flex-shrink-0 w-40 group"
-                >
-                  <div 
-                    className="w-40 h-40 rounded-xl bg-cover bg-center mb-2 group-hover:scale-105 transition-transform duration-300 ring-2 ring-transparent group-hover:ring-primary/50"
-                    style={{ backgroundImage: `url("${product.image}")` }}
-                  />
-                  <p className="text-white text-sm font-medium truncate group-hover:text-primary transition-colors">{product.title}</p>
-                  <p className="text-primary text-sm font-bold">${product.price}</p>
-                </Link>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
         
-        {/* CTA */}
+        {/* CTA - Explorar Productos */}
         <Link
-          href="/register"
+          href="/products"
           className="mt-8 btn-primary text-lg px-8 py-4 inline-flex items-center justify-center gap-2"
         >
-          <span className="material-symbols-outlined">park</span>
-          Adopt Your First Tree
+          <span className="material-symbols-outlined">eco</span>
+          Explorar Todos los Productos
         </Link>
       </section>
       
@@ -356,7 +402,7 @@ export default function LandingPage() {
       </section>
       
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-white/10">
+      <footer className="py-8 px-6 border-t border-white/10 pb-28">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-primary">eco</span>
@@ -367,6 +413,9 @@ export default function LandingPage() {
           </p>
         </div>
       </footer>
+
+      {/* Bottom Navigation */}
+      <BottomNav />
     </div>
   );
 }
