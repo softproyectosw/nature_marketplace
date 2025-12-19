@@ -89,7 +89,7 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     Provides list and retrieve operations with filtering and search.
     """
     
-    queryset = Product.objects.filter(is_active=True).select_related('category')
+    queryset = Product.objects.filter(is_active=True).select_related('category').prefetch_related('gallery')
     permission_classes = [IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
@@ -97,6 +97,14 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ['title', 'description', 'short_description', 'species']
     ordering_fields = ['price', 'rating', 'created_at']
     ordering = ['-created_at']
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Support 'category' param as alias for 'category__slug'
+        category = self.request.query_params.get('category')
+        if category:
+            queryset = queryset.filter(category__slug=category)
+        return queryset
     
     def get_serializer_class(self):
         if self.action == 'list':

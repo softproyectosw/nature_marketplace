@@ -156,7 +156,6 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             'discount_percentage',
             'category',
             'product_type',
-            'images',
             'gallery',
             'updates',
             'stock',

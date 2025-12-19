@@ -8,6 +8,7 @@ from django.urls import path
 
 from .views import (
     UserProfileView,
+    UserPhotoUploadView,
     UserPreferencesView,
     UserStatsView,
     UserBadgesView,
@@ -21,6 +22,7 @@ urlpatterns = [
     # Profile
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('profile/full/', FullProfileView.as_view(), name='full-profile'),
+    path('profile/photo/', UserPhotoUploadView.as_view(), name='photo-upload'),
     
     # Preferences
     path('preferences/', UserPreferencesView.as_view(), name='preferences'),

@@ -20,33 +20,55 @@ export interface Category {
   product_count?: number;
 }
 
+export interface ProductImage {
+  id: number;
+  url: string;
+  alt_text: string;
+  is_primary: boolean;
+}
+
 export interface Product {
   id: number;
   title: string;
   slug: string;
-  description: string;
+  description?: string;
   short_description: string;
-  price: number;
+  price: number | string;
+  price_label?: string;
+  pricing_type: 'annual' | 'one_time';
   currency: string;
   compare_at_price?: number;
   is_on_sale: boolean;
   discount_percentage: number;
-  category_name: string;
-  category_slug: string;
-  product_type: 'Retreat' | 'Tree' | 'PhysicalProduct' | 'DigitalGoods';
-  primary_image: string;
-  images: string[];
-  rating: number;
+  // Category can be object (detail) or flat fields (list)
+  category?: {
+    id: number;
+    name: string;
+    slug: string;
+    icon?: string;
+  };
+  category_name?: string;
+  category_slug?: string;
+  product_type: 'tree' | 'forest' | 'lagoon' | 'experience';
+  gallery?: ProductImage[];
+  primary_image?: string;
+  rating: number | string;
   reviews_count: number;
-  features: string[];
+  features?: string[];
   is_featured: boolean;
   is_new: boolean;
-  is_in_stock: boolean;
+  is_in_stock?: boolean;
+  stock?: number;
+  is_unlimited_stock?: boolean;
   location_name?: string;
   location_lat?: number;
   location_lng?: number;
-  co2_offset_kg?: number;
+  co2_offset_kg?: number | string;
   species?: string;
+  area_size?: string;
+  duration?: string;
+  max_participants?: number;
+  includes?: string[];
 }
 
 export interface ProductListResponse {
@@ -60,11 +82,19 @@ export interface ProductListResponse {
 // API Functions
 // =============================================================================
 
+interface CategoryListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Category[];
+}
+
 /**
  * Get all categories
  */
 export async function getCategories(): Promise<Category[]> {
-  return apiClient.get<Category[]>('/api/categories/');
+  const response = await apiClient.get<CategoryListResponse>('/api/categories/');
+  return response.results || [];
 }
 
 /**

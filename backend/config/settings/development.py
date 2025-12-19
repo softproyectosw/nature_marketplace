@@ -13,7 +13,7 @@ from .base import *  # noqa: F401, F403
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'backend']
 
 # =============================================================================
 # DATABASE CONFIGURATION
@@ -40,12 +40,8 @@ DATABASES = {
 # =============================================================================
 
 # Allow all origins in development for easier testing
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:5173',  # Vite dev server
-    'http://127.0.0.1:5173',
-]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 # =============================================================================
 # EMAIL CONFIGURATION (Development)
@@ -100,6 +96,22 @@ LOGGING['loggers']['django']['level'] = 'DEBUG'  # noqa: F405
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
 SECURE_SSL_REDIRECT = False
+
+# Disable CSRF for API endpoints in development
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:8000',
+    'http://127.0.0.1:*',
+]
+
+# Use only JWT authentication in development (no CSRF required)
+REST_FRAMEWORK = {
+    **REST_FRAMEWORK,  # noqa: F405
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 # =============================================================================
 # DEBUG TOOLBAR (Optional)

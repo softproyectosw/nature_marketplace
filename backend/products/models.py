@@ -316,9 +316,15 @@ class Product(models.Model):
     
     @property
     def primary_image(self) -> str:
-        """Get the first image URL or empty string."""
-        if self.images and len(self.images) > 0:
-            return self.images[0]
+        """Get the primary image URL from gallery."""
+        # First try to get the primary image
+        primary = self.gallery.filter(is_primary=True).first()
+        if primary:
+            return primary.url
+        # Fallback to first image in gallery
+        first = self.gallery.first()
+        if first:
+            return first.url
         return ''
     
     @property
@@ -389,6 +395,26 @@ class ProductImage(models.Model):
     
     def __str__(self) -> str:
         return f"{self.product.title} - Imagen {self.display_order}"
+    
+    def save(self, *args, **kwargs):
+        """Delete old image from storage when replacing with a new one."""
+        if self.pk:
+            try:
+                old_instance = ProductImage.objects.get(pk=self.pk)
+                if old_instance.image and self.image != old_instance.image:
+                    old_instance.image.delete(save=False)
+            except ProductImage.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        """Delete image file from storage when deleting the record."""
+        if self.image:
+            try:
+                self.image.delete(save=False)
+            except Exception:
+                pass
+        super().delete(*args, **kwargs)
     
     @property
     def url(self) -> str:
@@ -477,6 +503,26 @@ class ProductUpdate(models.Model):
     
     def __str__(self) -> str:
         return f"{self.product.title} - {self.title}"
+    
+    def save(self, *args, **kwargs):
+        """Delete old image from storage when replacing with a new one."""
+        if self.pk:
+            try:
+                old_instance = ProductUpdate.objects.get(pk=self.pk)
+                if old_instance.image and self.image != old_instance.image:
+                    old_instance.image.delete(save=False)
+            except ProductUpdate.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        """Delete image file from storage when deleting the record."""
+        if self.image:
+            try:
+                self.image.delete(save=False)
+            except Exception:
+                pass
+        super().delete(*args, **kwargs)
     
     @property
     def image_display_url(self) -> str:
@@ -806,6 +852,26 @@ class UnitImage(models.Model):
     def __str__(self) -> str:
         return f"{self.unit.name} - Imagen {self.display_order}"
     
+    def save(self, *args, **kwargs):
+        """Delete old image from storage when replacing with a new one."""
+        if self.pk:
+            try:
+                old_instance = UnitImage.objects.get(pk=self.pk)
+                if old_instance.image and self.image != old_instance.image:
+                    old_instance.image.delete(save=False)
+            except UnitImage.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        """Delete image file from storage when deleting the record."""
+        if self.image:
+            try:
+                self.image.delete(save=False)
+            except Exception:
+                pass
+        super().delete(*args, **kwargs)
+    
     @property
     def url(self) -> str:
         if self.image:
@@ -914,6 +980,26 @@ class UnitUpdate(models.Model):
     
     def __str__(self) -> str:
         return f"{self.unit.code} - {self.title}"
+    
+    def save(self, *args, **kwargs):
+        """Delete old image from storage when replacing with a new one."""
+        if self.pk:
+            try:
+                old_instance = UnitUpdate.objects.get(pk=self.pk)
+                if old_instance.image and self.image != old_instance.image:
+                    old_instance.image.delete(save=False)
+            except UnitUpdate.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        """Delete image file from storage when deleting the record."""
+        if self.image:
+            try:
+                self.image.delete(save=False)
+            except Exception:
+                pass
+        super().delete(*args, **kwargs)
     
     @property
     def image_display_url(self) -> str:

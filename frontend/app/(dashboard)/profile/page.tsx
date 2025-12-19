@@ -3,18 +3,28 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/auth';
+import { useAuth } from '@/contexts/AuthContext';
 import { BottomNav } from '@/components/ui';
+import { PhotoUpload } from '@/components/profile';
 
 /**
  * Profile Page - Based on Stitch design
  */
 
-interface UserData {
+interface UserProfile {
+  id: number;
   email: string;
   first_name?: string;
   last_name?: string;
+  display_name?: string;
+  avatar_url?: string;
+  level: string;
+  current_points: number;
+  total_points_earned: number;
 }
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const ACCESS_TOKEN_KEY = 'nature_access_token';
 
 // Mock data - will be fetched from API
 const adoptedTrees = [
@@ -44,59 +54,94 @@ const upcomingRetreats = [
 
 export default function ProfilePage() {
   const router = useRouter();
-  const [user, setUser] = useState<UserData | null>(null);
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock stats - will be fetched from API
+  // Stats from profile
   const stats = {
-    treesAdopted: 5,
-    retreatsBooked: 2,
-    totalOrders: 12,
+    treesAdopted: 0, // TODO: fetch from API
+    retreatsBooked: 0,
+    totalOrders: 0,
+    points: profile?.current_points || 0,
+    level: profile?.level || 'Seed',
   };
 
   useEffect(() => {
-    const loadUser = async () => {
-      try {
-        if (!auth.isAuthenticated()) {
-          router.push('/login');
-          return;
-        }
-        const userData = await auth.getCurrentUser();
-        setUser(userData);
-      } catch (error) {
-        console.error('Error loading user:', error);
-        router.push('/login');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadUser();
-  }, [router]);
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+    
+    if (token) {
+      loadProfile();
+    } else if (!authLoading && !isAuthenticated) {
+      router.push('/login');
+    }
+  }, [authLoading, isAuthenticated]);
 
-  const handleLogout = async () => {
+  const loadProfile = async () => {
     try {
-      await auth.logout();
-      router.push('/');
-    } catch (error) {
-      console.error('Logout error:', error);
+      const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+      console.log('[Profile] Loading profile with token:', token ? 'exists' : 'missing');
+      if (!token) return;
+
+      const res = await fetch(`${API_URL}/api/users/profile/`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+
+      console.log('[Profile] API Response status:', res.status);
+      
+      if (res.ok) {
+        const data = await res.json();
+        console.log('[Profile] Profile data received:', data);
+        console.log('[Profile] avatar_url:', data.avatar_url);
+        console.log('[Profile] photo_url:', data.photo_url);
+        setProfile(data);
+      } else {
+        const errorData = await res.text();
+        console.error('[Profile] API Error:', errorData);
+      }
+    } catch (err) {
+      console.error('[Profile] Error loading profile:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
+  const handlePhotoUpload = (newUrl: string) => {
+    console.log('[Profile] Photo uploaded, new URL:', newUrl);
+    if (profile) {
+      setProfile({ ...profile, avatar_url: newUrl });
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
+
+  // Show loading while checking auth or loading profile
+  if (authLoading || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background-dark">
-        <div className="text-white/60">Loading...</div>
+        <div className="animate-pulse text-white/60">Cargando perfil...</div>
       </div>
     );
   }
 
-  if (!user) {
-    return null;
+  // If no user and no profile, show nothing (redirect will happen in useEffect)
+  if (!user && !profile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background-dark">
+        <div className="animate-pulse text-white/60">Cargando...</div>
+      </div>
+    );
   }
 
-  const displayName = user.first_name 
-    ? `${user.first_name} ${user.last_name || ''}`.trim()
-    : user.email.split('@')[0];
+  const displayName = profile?.display_name 
+    || (user?.first_name ? `${user.first_name} ${user.last_name || ''}`.trim() : '')
+    || user?.email?.split('@')[0]
+    || profile?.email?.split('@')[0]
+    || 'Usuario';
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-background-dark font-display text-white pb-24">
@@ -113,13 +158,17 @@ export default function ProfilePage() {
 
       {/* User Avatar & Name */}
       <div className="flex flex-col items-center px-6 mb-6">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-200 to-amber-400 mb-4 overflow-hidden border-4 border-primary/30">
-          <div className="w-full h-full bg-cover bg-center" 
-            style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuACuKLVH_fV5X9Ba3rRSCI596oYq9gIAJwfZwaCPJLLvQL38TK2lAk4eXqWihfG9oxG4RHjkiBsZkS8vPB0_DsMoBLSm1R75Z1z-jR1dOawiERZxvG33EqxE3JZpPxhZCoIwTirc1Y9f4xZjfrH8nEEYIOaszbaKxU8AOu-fD_qFXYquavFTeu6NBBQ7DPtJK92GpPJqW5Wqq16dSMhjUWGgcC5iIvA79Um_d-aBeiiih1ft8qT8Lvkf5I4nkzZT5espv4ybCSlTvRq')` }}
-          />
-        </div>
-        <h2 className="text-xl font-bold mb-1">{displayName}</h2>
-        <p className="text-primary text-sm">Welcome back!</p>
+        <PhotoUpload
+          currentPhotoUrl={profile?.avatar_url}
+          onUploadSuccess={handlePhotoUpload}
+          onUploadError={(err) => setError(err)}
+        />
+        <h2 className="text-xl font-bold mb-1 mt-4">{displayName}</h2>
+        <p className="text-primary text-sm">Nivel: {stats.level}</p>
+        <p className="text-white/50 text-xs">{stats.points} puntos verdes</p>
+        {error && (
+          <p className="text-red-400 text-xs mt-2">{error}</p>
+        )}
       </div>
 
       {/* Stats Grid - 2 columns + 1 full width */}

@@ -51,9 +51,15 @@ class UserProfile(models.Model):
         blank=True,
         help_text='Display name shown in the UI'
     )
+    photo = models.ImageField(
+        upload_to='users/avatars/',
+        blank=True,
+        null=True,
+        help_text='User profile photo'
+    )
     photo_url = models.URLField(
         blank=True,
-        help_text='URL to user profile photo'
+        help_text='URL to user profile photo (external)'
     )
     
     # Preferences
@@ -114,6 +120,15 @@ class UserProfile(models.Model):
     def __str__(self) -> str:
         """Return string representation of the profile."""
         return f"{self.display_name or self.user.username}'s Profile"
+    
+    @property
+    def avatar_url(self) -> str:
+        """Get the avatar URL (uploaded photo or external URL)."""
+        if self.photo:
+            return self.photo.url
+        if self.photo_url:
+            return self.photo_url
+        return ''
     
     @property
     def next_level_threshold(self) -> int:

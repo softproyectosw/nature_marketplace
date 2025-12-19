@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/contexts/CartContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { CartDrawer } from '@/components/cart';
 
 /**
@@ -74,12 +75,14 @@ export default function RootLayout({
         />
       </head>
       <body className={`${plusJakartaSans.variable} font-display`}>
-        <CartProvider>
-          {/* Main content */}
-          <main className="min-h-screen">{children}</main>
-          {/* Cart Drawer */}
-          <CartDrawer />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            {/* Main content */}
+            <main className="min-h-screen">{children}</main>
+            {/* Cart Drawer */}
+            <CartDrawer />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

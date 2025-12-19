@@ -23,12 +23,19 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
     
+    console.log('=== LOGIN DEBUG ===');
+    console.log('Email:', email);
+    console.log('Password length:', password.length);
+    
     try {
-      await auth.login({ email, password });
+      console.log('>>> Calling auth.login...');
+      const result = await auth.login({ email, password });
+      console.log('>>> Login result:', result);
+      console.log('>>> Token saved:', localStorage.getItem('nature_access_token')?.substring(0, 20) + '...');
       router.push('/');
     } catch (err) {
+      console.error('>>> Login error:', err);
       setError('Invalid email or password. Please try again.');
-      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +80,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={(e) => { console.log('>>> FORM SUBMIT'); handleLogin(e); }} className="space-y-4">
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-lg">
                 {error}

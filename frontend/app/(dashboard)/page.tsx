@@ -1,62 +1,87 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { getProducts, getCategories, Product, Category } from '@/lib/api/products';
+import { FavoriteButton } from '@/components/products';
+import { AddToCartButton } from '@/components/cart';
+import { useAuth } from '@/contexts/AuthContext';
 
-/**
- * Dashboard Home Page
- * Matches the Eco-Luxury design from frontend-base/HomeScreen.tsx
- */
+// Helper to get category slug
+function getCategorySlug(product: Product): string {
+  return product.category?.slug || product.category_slug || 'products';
+}
 
-// Mock products data - will be fetched from API
-const PRODUCTS = [
-  {
-    id: 1,
-    title: 'Forest Bathing Retreat',
-    location: 'Pacific Northwest',
-    price: '$125.00',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA57d8-crjcjBcF7YSMwpjlCwOgxjuIMr_-ft7LPHaYWNRZFBtgEyVb6ik914ymF0nlxS0sy3CpfzfuzEg6n1aIgHgZ73mAfGBEHFE5i6ILJCiFjSG582VjSgeNDxH2kRfEKNmuhxFJDH9pQ4jzrpUX3QdM6tdqCNMk-prHTFJ3M52-0YSf8X78H3lFF1fPMb2GeFHr-gQpLKK9qDfefwoYzzcKoXYY0qSipZsvnaY8HN_il1xJdV5q7wirCuBPxSOFwN0EIh4aPV4w',
-  },
-  {
-    id: 2,
-    title: 'Mountain Wellness',
-    location: 'Andes Mountains',
-    price: '$1,200.00',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBX4GrNj0sPqAN5xJxaK64uqZpTTEKtSygiiYRmXrZxt4JO1G2-xrHV9g9UNTrwj6087J-dT1TcDXjVvl_uGkXDHj3PTVYgO3CY80SS3Y9jwNPu0bu9BrI3ouI1PJJKYWdOZ25Jbhwev1RIldC_gsZoj8zZEHYsrOLOpaqJBVxN_S_irVlY3NdiYbDtH9TwvmsrbnX9ZVCbvg7r8PJpb1Z8puza8b7nV2J5tQ4s-I_BcPTbVrDW10_XQ8aRtshGzZI-yYRXQhGqYfsy',
-  },
-  {
-    id: 3,
-    title: 'Adopt a Ceiba Tree',
-    location: 'Amazon Rainforest',
-    price: '$59.00',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDc1vS64gPJ7mXS0GZZ4J9GV3_vtbWnbqLpusdOe_mhtvKZl9800EWClKpEZdAlyu3an5ggEVNg7N47tWtonYYZ8DmGfRsPJxg0ciMgo7upHpfxUxlArq869hYXzEpwQLC8Uzu2y87lPyuSkSXOHREny1z0SNoRC7BiCi8FS6cOWljPP1Fz_GAVL2S0UTtXUxcLoAZ7YDvoBokf-hWw6QOmnSzCmTLX4xmCnwJ_sCpwPySc0wos40KisRYa9s7E7kq3z9ZHt-09Nghy',
-  },
-  {
-    id: 4,
-    title: 'Andean Oak Tree',
-    location: 'Colombian Highlands',
-    price: '$49.00',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-6GUNZKUR7_k_ZGZ0RbbevuXmvn9LOA0ukszskzKq8Qu9DAcS9RnbeRMCxxsDilRqpucyAIDDsCW0VhAIoXYPZY2imaFkgPFz2r5wammp0aiUc_pV6nBF4EpzpYMnoTR9par3UGszUC9mdx5Nfeee2UrRzkdNKqzzvz-N_HZNKBu2me2QX3-WBzBTL9irFLpr6fbBD8cPxjRc2mAWYdNquWY53gmbKoXckcMcyXc7M3OrNBHvmm5DBw_tAB74cN4BB1tFvBUSvJG3',
-  },
-  {
-    id: 5,
-    title: 'Herbal Medicine Kit',
-    location: 'Organic Farm',
-    price: '$35.00',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCb7qaFmCmW_aGhTbq42JWuifGkh94nQpfJmiA9_F7aE8mZuTVw1S2ZtiDI9B-5jU0vLKt5IKaOtya60cBgZj2wKfJ3j4IsKyEeBlu1TPRyskyshIO7j0j_BxGAd7hYkVPPU7FTpDe-STzCv0orJsz-2tY9VRCRpR1lvmaocHMDNtF3VpyzQfbrLD7ATHv2_gmJKdZZR6lIv6ypEojiay4KM3doCIohLK-JXcU-pINVpOCYB--Fz29aHoLH9qeX1Teo5j7JmZcnb07j',
-  },
-  {
-    id: 6,
-    title: 'Yoga Workshop',
-    location: 'Virtual',
-    price: '$25.00',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACuKLVH_fV5X9Ba3rRSCI596oYq9gIAJwfZwaCPJLLvQL38TK2lAk4eXqWihfG9oxG4RHjkiBsZkS8vPB0_DsMoBLSm1R75Z1z-jR1dOawiERZxvG33EqxE3JZpPxhZCoIwTirc1Y9f4xZjfrH8nEEYIOaszbaKxU8AOu-fD_qFXYquavFTeu6NBBQ7DPtJK92GpPJqW5Wqq16dSMhjUWGgcC5iIvA79Um_d-aBeiiih1ft8qT8Lvkf5I4nkzZT5espv4ybCSlTvRq',
-  },
-];
+// Helper to get category name
+function getCategoryName(product: Product): string {
+  return product.category?.name || product.category_name || '';
+}
 
-const featured = PRODUCTS.slice(0, 3);
-const newArrivals = PRODUCTS.slice(2, 6);
+// Helper to get primary image URL
+function getProductImage(product: Product): string {
+  if (product.primary_image) return product.primary_image;
+  const primaryImage = product.gallery?.find(img => img.is_primary);
+  if (primaryImage?.url) return primaryImage.url;
+  if (product.gallery?.[0]?.url) return product.gallery[0].url;
+  return '/images/placeholder-product.jpg';
+}
+
+// Helper to get price label
+function getPriceLabel(product: Product): string {
+  return product.pricing_type === 'annual' ? '/año' : '';
+}
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [newProducts, setNewProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [activeCategory, setActiveCategory] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load data
+  useEffect(() => {
+    async function loadData() {
+      setIsLoading(true);
+      try {
+        const [productsRes, catsRes] = await Promise.all([
+          getProducts({ is_featured: true }),
+          getCategories(),
+        ]);
+        
+        setFeaturedProducts(productsRes.results?.slice(0, 4) || []);
+        setCategories(catsRes || []);
+        
+        // Load new products
+        const newRes = await getProducts({ ordering: '-created_at' });
+        setNewProducts(newRes.results?.slice(0, 4) || []);
+      } catch (error) {
+        console.error('Failed to load dashboard data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  // Filter products by category
+  useEffect(() => {
+    async function filterProducts() {
+      if (!activeCategory) return;
+      try {
+        const res = await getProducts({ category: activeCategory });
+        setNewProducts(res.results?.slice(0, 4) || []);
+      } catch (error) {
+        console.error('Failed to filter products:', error);
+      }
+    }
+    if (activeCategory) {
+      filterProducts();
+    }
+  }, [activeCategory]);
+
+  const userName = user?.first_name || user?.email?.split('@')[0] || 'Nature Lover';
+
   return (
     <div className="flex flex-col font-display">
       {/* Top App Bar */}
@@ -65,141 +90,199 @@ export default function DashboardPage() {
           <div className="flex size-12 shrink-0 items-center">
             <Link
               href="/profile"
-              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer hover:opacity-90 transition-opacity"
-              style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuACuKLVH_fV5X9Ba3rRSCI596oYq9gIAJwfZwaCPJLLvQL38TK2lAk4eXqWihfG9oxG4RHjkiBsZkS8vPB0_DsMoBLSm1R75Z1z-jR1dOawiERZxvG33EqxE3JZpPxhZCoIwTirc1Y9f4xZjfrH8nEEYIOaszbaKxU8AOu-fD_qFXYquavFTeu6NBBQ7DPtJK92GpPJqW5Wqq16dSMhjUWGgcC5iIvA79Um_d-aBeiiih1ft8qT8Lvkf5I4nkzZT5espv4ybCSlTvRq")',
-              }}
-            />
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer hover:opacity-90 transition-opacity bg-primary/20 flex items-center justify-center"
+              style={user?.avatar ? {
+                backgroundImage: `url("${user.avatar}")`,
+              } : undefined}
+            >
+              {!user?.avatar && (
+                <span className="material-symbols-outlined text-primary">person</span>
+              )}
+            </Link>
           </div>
           <div className="flex w-12 items-center justify-end">
-            <button className="flex cursor-pointer items-center justify-center rounded-full h-12 bg-transparent text-white gap-2 text-base font-bold min-w-0 p-0">
+            <Link 
+              href="/settings"
+              className="flex cursor-pointer items-center justify-center rounded-full h-12 bg-transparent text-white gap-2 text-base font-bold min-w-0 p-0"
+            >
               <span className="material-symbols-outlined text-3xl">settings</span>
-            </button>
+            </Link>
           </div>
         </div>
         <p className="text-white tracking-light text-[28px] font-bold leading-tight">
-          Hi, Nature Lover
+          Hola, {userName}
         </p>
       </div>
 
       {/* Search Bar */}
       <div className="px-4 py-3">
-        <div className="flex w-full flex-1 items-stretch rounded-xl h-14 bg-dark-card border border-white/5">
-          <div className="text-primary flex items-center justify-center pl-4 pr-2">
-            <span className="material-symbols-outlined">search</span>
+        <Link href="/products" className="block">
+          <div className="flex w-full flex-1 items-stretch rounded-xl h-14 bg-dark-card border border-white/5 hover:border-primary/30 transition-colors">
+            <div className="text-primary flex items-center justify-center pl-4 pr-2">
+              <span className="material-symbols-outlined">search</span>
+            </div>
+            <div className="flex w-full flex-1 items-center text-primary/60 px-2 text-base">
+              Buscar árboles, experiencias...
+            </div>
           </div>
-          <input
-            className="flex w-full flex-1 bg-transparent border-none text-white focus:outline-none focus:ring-0 placeholder:text-primary/60 px-2 text-base font-normal h-full"
-            placeholder="Search for retreats, trees..."
-          />
-        </div>
+        </Link>
       </div>
 
-      {/* Chips */}
+      {/* Category Chips */}
       <div className="flex gap-3 px-4 py-3 overflow-x-auto no-scrollbar">
-        <div className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-primary px-4">
-          <span className="material-symbols-outlined text-black text-lg">apps</span>
-          <p className="text-black text-sm font-bold">Todos</p>
-        </div>
-        <div className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-dark-card px-4 border border-white/5">
-          <span className="material-symbols-outlined text-white/70 text-lg">park</span>
-          <p className="text-white text-sm font-medium">Árboles</p>
-        </div>
-        <div className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-dark-card px-4 border border-white/5">
-          <span className="material-symbols-outlined text-white/70 text-lg">forest</span>
-          <p className="text-white text-sm font-medium">Bosques</p>
-        </div>
-        <div className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-dark-card px-4 border border-white/5">
-          <span className="material-symbols-outlined text-white/70 text-lg">water</span>
-          <p className="text-white text-sm font-medium">Lagunas</p>
-        </div>
-        <div className="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-dark-card px-4 border border-white/5">
-          <span className="material-symbols-outlined text-white/70 text-lg">hiking</span>
-          <p className="text-white text-sm font-medium">Experiencias</p>
-        </div>
+        <button
+          onClick={() => setActiveCategory('')}
+          className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl px-4 transition-colors ${
+            activeCategory === '' 
+              ? 'bg-primary text-black' 
+              : 'bg-dark-card text-white border border-white/5 hover:border-primary/30'
+          }`}
+        >
+          <span className="material-symbols-outlined text-lg">apps</span>
+          <p className="text-sm font-medium">Todos</p>
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat.slug}
+            onClick={() => setActiveCategory(cat.slug)}
+            className={`flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl px-4 transition-colors ${
+              activeCategory === cat.slug 
+                ? 'bg-primary text-black' 
+                : 'bg-dark-card text-white border border-white/5 hover:border-primary/30'
+            }`}
+          >
+            <span className="material-symbols-outlined text-lg">{cat.icon || 'category'}</span>
+            <p className="text-sm font-medium">{cat.name}</p>
+          </button>
+        ))}
       </div>
 
       {/* Featured Section */}
       <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
         Destacados para Apadrinar
       </h2>
-      <div className="flex overflow-x-auto no-scrollbar px-4 pb-4">
-        <div className="flex gap-4">
-          {featured.map((item) => (
-            <Link
-              key={item.id}
-              href={`/products/retreats/${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-              className="flex flex-col gap-3 min-w-[260px] cursor-pointer group"
-            >
-              <div
-                className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-2xl relative"
-                style={{ backgroundImage: `url("${item.image}")` }}
+      
+      {isLoading ? (
+        <div className="flex overflow-x-auto no-scrollbar px-4 pb-4">
+          <div className="flex gap-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex flex-col gap-3 min-w-[260px] animate-pulse">
+                <div className="w-full aspect-video bg-white/10 rounded-2xl" />
+                <div className="h-4 bg-white/10 rounded w-3/4" />
+                <div className="h-3 bg-white/10 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : featuredProducts.length === 0 ? (
+        <div className="px-4 pb-4 text-white/50 text-sm">
+          No hay productos destacados disponibles
+        </div>
+      ) : (
+        <div className="flex overflow-x-auto no-scrollbar px-4 pb-4">
+          <div className="flex gap-4">
+            {featuredProducts.map((product) => (
+              <Link
+                key={product.id}
+                href={`/products/${getCategorySlug(product)}/${product.slug}`}
+                className="flex flex-col gap-3 min-w-[260px] cursor-pointer group"
               >
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // TODO: Toggle favorite
-                  }}
-                  className="absolute top-2 right-2 flex items-center justify-center size-8 rounded-full bg-black/30 backdrop-blur-md hover:bg-black/50 transition-colors"
+                <div
+                  className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-2xl relative bg-white/5"
+                  style={{ backgroundImage: `url("${getProductImage(product)}")` }}
                 >
-                  <span className="material-symbols-outlined text-lg text-white">
-                    favorite
-                  </span>
-                </button>
-              </div>
-              <div>
-                <p className="text-white text-base font-bold leading-normal group-hover:text-primary transition-colors">
-                  {item.title}
-                </p>
-                <p className="text-primary/80 text-sm font-normal leading-normal">
-                  {item.location}
-                </p>
-              </div>
-            </Link>
+                  <FavoriteButton
+                    productId={product.id}
+                    className="absolute top-2 right-2"
+                  />
+                </div>
+                <div>
+                  <p className="text-white text-base font-bold leading-normal group-hover:text-primary transition-colors">
+                    {product.title}
+                  </p>
+                  <p className="text-primary/80 text-sm font-normal leading-normal">
+                    {product.location_name || getCategoryName(product)}
+                  </p>
+                  <p className="text-white font-bold mt-1">
+                    ${product.price}{getPriceLabel(product)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* New Products Section */}
+      <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-6">
+        {activeCategory ? `${categories.find(c => c.slug === activeCategory)?.name || 'Productos'}` : 'Nuevos Disponibles'}
+      </h2>
+      
+      {isLoading ? (
+        <div className="px-4 grid grid-cols-2 gap-4 pb-24">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="flex flex-col gap-3 animate-pulse">
+              <div className="w-full aspect-square bg-white/10 rounded-2xl" />
+              <div className="h-4 bg-white/10 rounded w-3/4" />
+              <div className="h-3 bg-white/10 rounded w-1/2" />
+            </div>
           ))}
         </div>
-      </div>
-
-      {/* New Arrivals Section */}
-      <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-6">
-        Nuevos Árboles Disponibles
-      </h2>
-      <div className="px-4 grid grid-cols-2 gap-4">
-        {newArrivals.map((item) => (
-          <Link
-            key={item.id}
-            href={`/products/trees/${item.title.toLowerCase().replace(/\s+/g, '-')}`}
-            className="flex flex-col gap-3 cursor-pointer group"
-          >
-            <div className="relative w-full">
-              <div
-                className="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-2xl transition-transform group-hover:scale-105"
-                style={{ backgroundImage: `url("${item.image}")` }}
-              />
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  // TODO: Toggle favorite
+      ) : newProducts.length === 0 ? (
+        <div className="px-4 pb-24 text-white/50 text-sm">
+          No hay productos disponibles en esta categoría
+        </div>
+      ) : (
+        <div className="px-4 grid grid-cols-2 gap-4 pb-24">
+          {newProducts.map((product) => (
+            <div key={product.id} className="flex flex-col gap-3 group">
+              <Link href={`/products/${getCategorySlug(product)}/${product.slug}`}>
+                <div className="relative w-full">
+                  <div
+                    className="w-full bg-center bg-no-repeat aspect-square bg-cover rounded-2xl transition-transform group-hover:scale-105 bg-white/5"
+                    style={{ backgroundImage: `url("${getProductImage(product)}")` }}
+                  />
+                  <FavoriteButton
+                    productId={product.id}
+                    className="absolute top-2 right-2"
+                  />
+                  {!product.is_unlimited_stock && product.stock === 0 && (
+                    <div className="absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center">
+                      <span className="text-white font-bold">Agotado</span>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <p className="text-white text-base font-medium leading-normal line-clamp-1 group-hover:text-primary transition-colors">
+                    {product.title}
+                  </p>
+                  <p className="text-white/50 text-xs">
+                    {product.location_name || getCategoryName(product)}
+                  </p>
+                  <p className="text-primary font-bold mt-1">
+                    ${product.price}{getPriceLabel(product)}
+                  </p>
+                </div>
+              </Link>
+              <AddToCartButton
+                product={{
+                  id: product.id,
+                  title: product.title,
+                  price: Number(product.price),
+                  priceLabel: getPriceLabel(product),
+                  image: getProductImage(product),
+                  category: getCategorySlug(product),
+                  slug: `${getCategorySlug(product)}/${product.slug}`,
+                  stock: product.stock || 0,
+                  isUnlimitedStock: product.is_unlimited_stock ?? true,
                 }}
-                className="absolute top-2 right-2 flex items-center justify-center size-8 rounded-full bg-black/30 backdrop-blur-md hover:bg-black/50 transition-colors"
-              >
-                <span className="material-symbols-outlined text-lg text-white">
-                  favorite
-                </span>
-              </button>
+                variant="button"
+                className="w-full"
+              />
             </div>
-            <div>
-              <p className="text-white text-base font-medium leading-normal line-clamp-1 group-hover:text-primary transition-colors">
-                {item.title}
-              </p>
-              <p className="text-primary/80 text-sm font-normal leading-normal">
-                {item.price}
-              </p>
-            </div>
-          </Link>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

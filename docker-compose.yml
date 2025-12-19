@@ -56,11 +56,8 @@ services:
     entrypoint: >
       /bin/sh -c "
       mc alias set myminio http://minio:9000 $${MINIO_ROOT_USER:-minioadmin} $${MINIO_ROOT_PASSWORD:-minioadmin123};
-      mc mb myminio/products --ignore-existing;
-      mc mb myminio/users --ignore-existing;
-      mc mb myminio/trees --ignore-existing;
-      mc anonymous set download myminio/products;
-      mc anonymous set download myminio/trees;
+      mc mb myminio/media --ignore-existing;
+      mc anonymous set download myminio/media;
       exit 0;
       "
     networks:
@@ -78,10 +75,13 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - DATABASE_URL=postgresql://${DB_USER:-nature_user}:${DB_PASSWORD:-nature_secret}@db:5432/${DB_NAME:-nature_marketplace}
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
-      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minioadmin123}
-      - MINIO_USE_SSL=false
+      - USE_S3=true
+      - AWS_S3_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER:-minioadmin}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-minioadmin123}
+      - AWS_STORAGE_BUCKET_NAME=${MINIO_BUCKET:-media}
+      - AWS_S3_USE_SSL=false
+      - AWS_S3_CUSTOM_DOMAIN=localhost:9000/${MINIO_BUCKET:-media}
     env_file:
       - .env
     volumes:

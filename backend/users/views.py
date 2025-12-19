@@ -10,10 +10,13 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 
+from rest_framework.parsers import MultiPartParser, FormParser
+
 from .serializers import (
     UserProfileSerializer,
     UserProfileUpdateSerializer,
     UserPreferencesSerializer,
+    UserPhotoUploadSerializer,
     BadgeSerializer,
     UserBadgeSerializer,
     UserStatsSerializer,
@@ -40,7 +43,7 @@ class UserProfileView(APIView):
     def get(self, request):
         """Get user profile."""
         profile = user_profile_service.get_or_create_profile(request.user)
-        serializer = UserProfileSerializer(profile)
+        serializer = UserProfileSerializer(profile, context={'request': request})
         return Response(serializer.data)
     
     @extend_schema(
@@ -60,7 +63,51 @@ class UserProfileView(APIView):
             **serializer.validated_data
         )
         
-        return Response(UserProfileSerializer(profile).data)
+        return Response(UserProfileSerializer(profile, context={'request': request}).data)
+
+
+class UserPhotoUploadView(APIView):
+    """
+    User photo upload endpoint.
+    
+    Upload a profile photo for the authenticated user.
+    """
+    
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+    
+    @extend_schema(
+        summary="Upload profile photo",
+        description="Upload a new profile photo for the authenticated user.",
+        request=UserPhotoUploadSerializer,
+        responses={200: UserProfileSerializer},
+        tags=["Users"]
+    )
+    def post(self, request):
+        """Upload profile photo."""
+        profile = user_profile_service.get_or_create_profile(request.user)
+        
+        serializer = UserPhotoUploadSerializer(profile, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response(UserProfileSerializer(profile, context={'request': request}).data)
+    
+    @extend_schema(
+        summary="Delete profile photo",
+        description="Delete the profile photo for the authenticated user.",
+        responses={200: UserProfileSerializer},
+        tags=["Users"]
+    )
+    def delete(self, request):
+        """Delete profile photo."""
+        profile = user_profile_service.get_or_create_profile(request.user)
+        
+        if profile.photo:
+            profile.photo.delete()
+            profile.save()
+        
+        return Response(UserProfileSerializer(profile, context={'request': request}).data)
 
 
 class UserPreferencesView(APIView):
@@ -209,7 +256,7 @@ class FullProfileView(APIView):
         forest_stats = ecosystem_service.get_user_forest_stats(request.user)
         
         return Response({
-            'profile': UserProfileSerializer(profile_data['profile']).data,
+            'profile': UserProfileSerializer(profile_data['profile'], context={'request': request}).data,
             'badges': UserBadgeSerializer(profile_data['badges'], many=True).data,
             'stats': {
                 **profile_data['stats'],

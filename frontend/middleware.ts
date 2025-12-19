@@ -47,9 +47,10 @@ export function middleware(request: NextRequest) {
   }
   
   // Redirect authenticated users from auth routes to dashboard
-  if (isAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL('/', request.url));
-  }
+  // Temporarily disabled for debugging
+  // if (isAuthRoute && isAuthenticated) {
+  //   return NextResponse.redirect(new URL('/', request.url));
+  // }
   
   return NextResponse.next();
 }

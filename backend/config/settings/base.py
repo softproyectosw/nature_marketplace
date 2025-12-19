@@ -12,6 +12,10 @@ import os
 from pathlib import Path
 from datetime import timedelta
 
+# Load environment variables from .env file (for local development)
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent.parent.parent.parent / '.env')
+
 # =============================================================================
 # PATH CONFIGURATION
 # =============================================================================
@@ -37,6 +41,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # =============================================================================
 
 DJANGO_APPS = [
+    'jazzmin',  # Admin theme - MUST be before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -355,15 +360,45 @@ REST_AUTH = {
 
 USE_S3 = os.environ.get('USE_S3', 'false').lower() == 'true'
 
+# Debug: Print S3 configuration status
+print(f"[Settings] USE_S3={USE_S3}")
+
 if USE_S3:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL', '')
-    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
-    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
-    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', 'media')
-    AWS_S3_USE_SSL = os.environ.get('AWS_S3_USE_SSL', 'true').lower() == 'true'
+    # Support both AWS_* and MINIO_* variable names for flexibility
+    AWS_S3_ENDPOINT_URL = os.environ.get('AWS_S3_ENDPOINT_URL') or os.environ.get('MINIO_ENDPOINT_URL', '')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID') or os.environ.get('MINIO_ACCESS_KEY', '')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY') or os.environ.get('MINIO_SECRET_KEY', '')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME') or os.environ.get('MINIO_BUCKET', 'media')
+    
+    # SSL configuration
+    minio_use_ssl = os.environ.get('AWS_S3_USE_SSL') or os.environ.get('MINIO_USE_SSL', 'false')
+    AWS_S3_USE_SSL = minio_use_ssl.lower() == 'true'
+    
     AWS_QUERYSTRING_AUTH = False
     AWS_DEFAULT_ACL = 'public-read'
+    
+    # Custom domain for public URLs (browser-accessible URL)
+    # For MinIO dev: localhost:9000/bucket
+    # For production: your-cdn.com or s3.region.amazonaws.com
+    AWS_S3_CUSTOM_DOMAIN = os.environ.get('AWS_S3_CUSTOM_DOMAIN') or os.environ.get('MINIO_PUBLIC_HOST', '')
+    
+    if AWS_S3_CUSTOM_DOMAIN:
+        AWS_S3_URL_PROTOCOL = 'https:' if AWS_S3_USE_SSL else 'http:'
+    
+    # Django 4.2+ uses STORAGES instead of DEFAULT_FILE_STORAGE
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+    
+    # Debug: Print S3 configuration
+    print(f"[Settings] S3 Endpoint: {AWS_S3_ENDPOINT_URL}")
+    print(f"[Settings] S3 Bucket: {AWS_STORAGE_BUCKET_NAME}")
+    print(f"[Settings] S3 Custom Domain: {AWS_S3_CUSTOM_DOMAIN}")
 
 # =============================================================================
 # STRIPE CONFIGURATION
@@ -412,4 +447,116 @@ LOGGING = {
             'propagate': False,
         },
     },
+}
+
+# =============================================================================
+# JAZZMIN ADMIN THEME
+# =============================================================================
+
+JAZZMIN_SETTINGS = {
+    # Title & Branding
+    "site_title": "Nature Admin",
+    "site_header": "Nature Marketplace",
+    "site_brand": "Nature",
+    "site_logo": None,
+    "login_logo": None,
+    "login_logo_dark": None,
+    "site_logo_classes": "img-circle",
+    "site_icon": None,
+    "welcome_sign": "Welcome to Nature Marketplace Admin",
+    "copyright": "Nature Marketplace",
+    
+    # Search
+    "search_model": ["products.Product", "users.User", "orders.Order"],
+    
+    # User Menu
+    "topmenu_links": [
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "API Docs", "url": "/api/docs/", "new_window": True},
+        {"name": "View Site", "url": "/", "new_window": True},
+    ],
+    
+    # Side Menu
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "order_with_respect_to": [
+        "products",
+        "orders", 
+        "payments",
+        "users",
+        "ecosystems",
+    ],
+    
+    # Icons - using Font Awesome
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "users.User": "fas fa-user-circle",
+        "products.Product": "fas fa-tree",
+        "products.Category": "fas fa-tags",
+        "products.ProductImage": "fas fa-images",
+        "products.ProductUpdate": "fas fa-bell",
+        "products.SponsorshipUnit": "fas fa-leaf",
+        "products.UnitImage": "fas fa-camera",
+        "products.UnitUpdate": "fas fa-sync",
+        "orders.Order": "fas fa-shopping-cart",
+        "orders.OrderItem": "fas fa-box",
+        "orders.Cart": "fas fa-shopping-basket",
+        "orders.CartItem": "fas fa-cube",
+        "payments.Payment": "fas fa-credit-card",
+        "ecosystems.Ecosystem": "fas fa-globe-americas",
+    },
+    "default_icon_parents": "fas fa-folder",
+    "default_icon_children": "fas fa-circle",
+    
+    # Related Modal
+    "related_modal_active": True,
+    
+    # UI Tweaks
+    "custom_css": None,
+    "custom_js": None,
+    "use_google_fonts_cdn": True,
+    "show_ui_builder": False,
+    
+    # Change view
+    "changeform_format": "horizontal_tabs",
+    "changeform_format_overrides": {
+        "auth.user": "collapsible",
+        "auth.group": "vertical_tabs",
+    },
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-dark navbar-secondary",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "flatly",
+    "dark_mode_theme": "slate",
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }
