@@ -56,6 +56,14 @@ function getAuthToken(): string | null {
 }
 
 /**
+ * Get current language from storage
+ */
+function getCurrentLanguage(): string {
+  if (typeof window === 'undefined') return 'es';
+  return localStorage.getItem('nature_locale') || 'es';
+}
+
+/**
  * Make an API request
  */
 async function request<T>(
@@ -67,9 +75,11 @@ async function request<T>(
   
   const url = buildUrl(path, params);
   const token = getAuthToken();
+  const language = getCurrentLanguage();
   
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
+    'Accept-Language': language,
     ...customHeaders,
   };
   

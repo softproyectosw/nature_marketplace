@@ -13,9 +13,73 @@ from .models import (
 )
 
 
-class CategorySerializer(serializers.ModelSerializer):
-    """Serializer for Category model."""
+# i18n Mixin for translated fields
+class TranslatedFieldsMixin:
+    """
+    Mixin to handle translated fields based on Accept-Language header.
     
+    For each translatable field (e.g., 'title'), checks if '{field}_en' exists
+    and returns the appropriate value based on the request language.
+    """
+    
+    # Define which fields have translations
+    translated_fields = []
+    
+    def get_language(self):
+        """Get language from request header."""
+        request = self.context.get('request')
+        if request:
+            accept_lang = request.headers.get('Accept-Language', 'es')
+            if accept_lang.startswith('en'):
+                return 'en'
+        return 'es'
+    
+    def get_translated_value(self, obj, field_name):
+        """Get translated value for a field."""
+        lang = self.get_language()
+        
+        if lang == 'en':
+            en_field = f'{field_name}_en'
+            en_value = getattr(obj, en_field, None)
+            if en_value:
+                return en_value
+        
+        return getattr(obj, field_name, '')
+    
+    def get_translated_json_value(self, obj, field_name):
+        """Get translated value for a JSON field (list)."""
+        lang = self.get_language()
+        
+        if lang == 'en':
+            en_field = f'{field_name}_en'
+            en_value = getattr(obj, en_field, None)
+            if en_value and len(en_value) > 0:
+                return en_value
+        
+        return getattr(obj, field_name, [])
+    
+    def to_representation(self, instance):
+        """Override to replace translated fields with correct language."""
+        data = super().to_representation(instance)
+        
+        # Handle regular text fields
+        for field in self.translated_fields:
+            if field in data:
+                data[field] = self.get_translated_value(instance, field)
+        
+        # Handle JSON fields (lists)
+        translated_json_fields = getattr(self, 'translated_json_fields', [])
+        for field in translated_json_fields:
+            if field in data:
+                data[field] = self.get_translated_json_value(instance, field)
+        
+        return data
+
+
+class CategorySerializer(TranslatedFieldsMixin, serializers.ModelSerializer):
+    """Serializer for Category model with i18n support."""
+    
+    translated_fields = ['name', 'description']
     product_count = serializers.SerializerMethodField()
     
     class Meta:
@@ -38,8 +102,10 @@ class CategorySerializer(serializers.ModelSerializer):
         return obj.products.filter(is_active=True).count()
 
 
-class CategoryListSerializer(serializers.ModelSerializer):
-    """Lightweight serializer for category lists."""
+class CategoryListSerializer(TranslatedFieldsMixin, serializers.ModelSerializer):
+    """Lightweight serializer for category lists with i18n support."""
+    
+    translated_fields = ['name']
     
     class Meta:
         model = Category
@@ -85,10 +151,12 @@ class ProductUpdateSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProductListSerializer(serializers.ModelSerializer):
-    """Lightweight serializer for product lists and cards."""
+class ProductListSerializer(TranslatedFieldsMixin, serializers.ModelSerializer):
+    """Lightweight serializer for product lists and cards with i18n support."""
     
-    category_name = serializers.CharField(source='category.name', read_only=True)
+    translated_fields = ['title', 'short_description']
+    
+    category_name = serializers.SerializerMethodField()
     category_slug = serializers.CharField(source='category.slug', read_only=True)
     is_on_sale = serializers.BooleanField(read_only=True)
     discount_percentage = serializers.IntegerField(read_only=True)
@@ -122,10 +190,21 @@ class ProductListSerializer(serializers.ModelSerializer):
             'area_size',
             'duration',
         ]
+    
+    def get_category_name(self, obj):
+        """Get translated category name."""
+        lang = self.get_language()
+        if lang == 'en' and obj.category.name_en:
+            return obj.category.name_en
+        return obj.category.name
 
 
-class ProductDetailSerializer(serializers.ModelSerializer):
-    """Full serializer for product detail pages."""
+class ProductDetailSerializer(TranslatedFieldsMixin, serializers.ModelSerializer):
+    """Full serializer for product detail pages with i18n support."""
+    
+    translated_fields = ['title', 'description', 'short_description', 'purpose', 'impact_description', 'duration']
+    # JSON fields that need special handling
+    translated_json_fields = ['includes', 'features']
     
     category = CategoryListSerializer(read_only=True)
     gallery = ProductImageSerializer(many=True, read_only=True)

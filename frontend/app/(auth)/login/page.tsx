@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Input, TreeAnimation } from '@/components/ui';
+import { Input, TreeAnimation, LanguageSelector } from '@/components/ui';
 import { auth } from '@/lib/auth';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 /**
  * Login Page with Tree Animation
@@ -13,6 +14,7 @@ import { auth } from '@/lib/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -60,23 +62,26 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-md px-6">
         {/* The Tree Container */}
         <div className="bg-background-dark/80 backdrop-blur-xl border border-wood-light/30 rounded-2xl p-8 shadow-2xl relative">
-          {/* Back Button */}
-          <Link
-            href="/"
-            className="absolute top-4 left-4 text-white/60 hover:text-white"
-          >
-            <span className="material-symbols-outlined">arrow_back</span>
-          </Link>
+          {/* Back Button & Language Selector */}
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-center">
+            <Link
+              href="/"
+              className="text-white/60 hover:text-white"
+            >
+              <span className="material-symbols-outlined">arrow_back</span>
+            </Link>
+            <LanguageSelector />
+          </div>
 
           {/* Tree Animation */}
           <TreeAnimation passwordLength={password.length} />
 
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-white mb-1">
-              Grow Your Account
+              {t.auth.login.title}
             </h2>
             <p className="text-white/60 text-sm">
-              Enter your details to nurture your profile.
+              {t.auth.login.subtitle}
             </p>
           </div>
 
@@ -88,7 +93,7 @@ export default function LoginPage() {
             )}
             
             <Input
-              label="Plant your Email"
+              label={t.auth.login.email}
               icon="seed"
               type="email"
               value={email}
@@ -98,7 +103,7 @@ export default function LoginPage() {
             />
 
             <Input
-              label="Water with Password"
+              label={t.auth.login.password}
               icon="water_drop"
               type="password"
               value={password}
@@ -118,7 +123,7 @@ export default function LoginPage() {
                 </span>
               ) : (
                 <>
-                  <span>Start Growing</span>
+                  <span>{t.auth.login.submit}</span>
                   <span className="material-symbols-outlined group-hover:-translate-y-1 transition-transform">
                     forest
                   </span>
@@ -157,16 +162,16 @@ export default function LoginPage() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span>Continue with Google</span>
+            <span>Google</span>
           </button>
 
           <p className="text-center text-white/40 text-sm mt-6">
-            Don&apos;t have a seed yet?{' '}
+            {t.auth.login.noAccount}{' '}
             <Link
               href="/register"
               className="text-primary cursor-pointer hover:underline"
             >
-              Get one here
+              {t.auth.login.signUp}
             </Link>
           </p>
         </div>

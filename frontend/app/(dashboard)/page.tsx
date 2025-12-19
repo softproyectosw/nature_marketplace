@@ -6,6 +6,7 @@ import { getProducts, getCategories, Product, Category } from '@/lib/api/product
 import { FavoriteButton } from '@/components/products';
 import { AddToCartButton } from '@/components/cart';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 // Helper to get category slug
 function getCategorySlug(product: Product): string {
@@ -26,18 +27,39 @@ function getProductImage(product: Product): string {
   return '/images/placeholder-product.jpg';
 }
 
-// Helper to get price label
-function getPriceLabel(product: Product): string {
-  return product.pricing_type === 'annual' ? '/año' : '';
-}
+// Category translation map
+const categoryTranslationKeys: Record<string, string> = {
+  '': 'all',
+  'trees': 'trees',
+  'forests': 'forests',
+  'lagoons': 'lagoons',
+  'experiences': 'experiences',
+  'retreats': 'retreats',
+  'remedies': 'remedies',
+};
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategory, setActiveCategory] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+
+  // Get price label based on language
+  const getPriceLabel = (product: Product): string => {
+    return product.pricing_type === 'annual' ? t.products.perYear : '';
+  };
+
+  // Get translated category name
+  const getCategoryTranslation = (slug: string, fallbackName: string): string => {
+    const key = categoryTranslationKeys[slug];
+    if (key && t.products[key as keyof typeof t.products]) {
+      return t.products[key as keyof typeof t.products] as string;
+    }
+    return fallbackName;
+  };
 
   // Load data
   useEffect(() => {
@@ -110,7 +132,7 @@ export default function DashboardPage() {
           </div>
         </div>
         <p className="text-white tracking-light text-[28px] font-bold leading-tight">
-          Hola, {userName}
+          {t.dashboard.hello}, {userName}
         </p>
       </div>
 
@@ -122,7 +144,7 @@ export default function DashboardPage() {
               <span className="material-symbols-outlined">search</span>
             </div>
             <div className="flex w-full flex-1 items-center text-primary/60 px-2 text-base">
-              Buscar árboles, experiencias...
+              {t.dashboard.searchPlaceholder}
             </div>
           </div>
         </Link>
@@ -139,7 +161,7 @@ export default function DashboardPage() {
           }`}
         >
           <span className="material-symbols-outlined text-lg">apps</span>
-          <p className="text-sm font-medium">Todos</p>
+          <p className="text-sm font-medium">{t.products.all}</p>
         </button>
         {categories.map((cat) => (
           <button
@@ -152,14 +174,14 @@ export default function DashboardPage() {
             }`}
           >
             <span className="material-symbols-outlined text-lg">{cat.icon || 'category'}</span>
-            <p className="text-sm font-medium">{cat.name}</p>
+            <p className="text-sm font-medium">{getCategoryTranslation(cat.slug, cat.name)}</p>
           </button>
         ))}
       </div>
 
       {/* Featured Section */}
       <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
-        Destacados para Apadrinar
+        {t.dashboard.featured}
       </h2>
       
       {isLoading ? (
@@ -176,7 +198,7 @@ export default function DashboardPage() {
         </div>
       ) : featuredProducts.length === 0 ? (
         <div className="px-4 pb-4 text-white/50 text-sm">
-          No hay productos destacados disponibles
+          {t.dashboard.noFeatured}
         </div>
       ) : (
         <div className="flex overflow-x-auto no-scrollbar px-4 pb-4">
@@ -215,7 +237,7 @@ export default function DashboardPage() {
 
       {/* New Products Section */}
       <h2 className="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-6">
-        {activeCategory ? `${categories.find(c => c.slug === activeCategory)?.name || 'Productos'}` : 'Nuevos Disponibles'}
+        {activeCategory ? getCategoryTranslation(activeCategory, categories.find(c => c.slug === activeCategory)?.name || t.common.products) : t.dashboard.newAvailable}
       </h2>
       
       {isLoading ? (
@@ -230,7 +252,7 @@ export default function DashboardPage() {
         </div>
       ) : newProducts.length === 0 ? (
         <div className="px-4 pb-24 text-white/50 text-sm">
-          No hay productos disponibles en esta categoría
+          {t.dashboard.noProducts}
         </div>
       ) : (
         <div className="px-4 grid grid-cols-2 gap-4 pb-24">
@@ -248,7 +270,7 @@ export default function DashboardPage() {
                   />
                   {!product.is_unlimited_stock && product.stock === 0 && (
                     <div className="absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center">
-                      <span className="text-white font-bold">Agotado</span>
+                      <span className="text-white font-bold">{t.products.outOfStock}</span>
                     </div>
                   )}
                 </div>

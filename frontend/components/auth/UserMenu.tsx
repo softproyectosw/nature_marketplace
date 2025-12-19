@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/auth';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 interface User {
   email: string;
@@ -13,6 +14,7 @@ interface User {
 
 export function UserMenu() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -73,13 +75,13 @@ export function UserMenu() {
           href="/login"
           className="text-white/70 hover:text-white text-sm font-medium px-3 py-2"
         >
-          Sign In
+          {t.userMenu.signIn}
         </Link>
         <Link
           href="/register"
           className="bg-primary text-background-dark text-sm font-bold px-4 py-2 rounded-full hover:bg-primary/90 transition-all"
         >
-          Sign Up
+          {t.userMenu.signUp}
         </Link>
       </div>
     );
@@ -128,7 +130,7 @@ export function UserMenu() {
               className="flex items-center gap-3 px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition-colors"
             >
               <span className="material-symbols-outlined text-lg">person</span>
-              <span>My Profile</span>
+              <span>{t.userMenu.myProfile}</span>
             </Link>
             <Link
               href="/favorites"
@@ -136,7 +138,7 @@ export function UserMenu() {
               className="flex items-center gap-3 px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition-colors"
             >
               <span className="material-symbols-outlined text-lg">favorite</span>
-              <span>Favorites</span>
+              <span>{t.userMenu.favorites}</span>
             </Link>
             <Link
               href="/my-trees"
@@ -144,7 +146,7 @@ export function UserMenu() {
               className="flex items-center gap-3 px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition-colors"
             >
               <span className="material-symbols-outlined text-lg">park</span>
-              <span>My Trees</span>
+              <span>{t.userMenu.myTrees}</span>
             </Link>
             <Link
               href="/orders"
@@ -152,7 +154,7 @@ export function UserMenu() {
               className="flex items-center gap-3 px-4 py-2 text-white/80 hover:bg-white/10 hover:text-white transition-colors"
             >
               <span className="material-symbols-outlined text-lg">receipt_long</span>
-              <span>Orders</span>
+              <span>{t.userMenu.orders}</span>
             </Link>
           </div>
 
@@ -163,7 +165,7 @@ export function UserMenu() {
               className="flex items-center gap-3 px-4 py-2 w-full text-red-400 hover:bg-red-500/10 transition-colors"
             >
               <span className="material-symbols-outlined text-lg">logout</span>
-              <span>Sign Out</span>
+              <span>{t.userMenu.signOut}</span>
             </button>
           </div>
         </div>

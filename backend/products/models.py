@@ -19,7 +19,12 @@ class Category(models.Model):
     name = models.CharField(
         max_length=100,
         unique=True,
-        help_text='Category name (e.g., "Trees", "Retreats")'
+        help_text='Category name (e.g., "Trees", "Retreats") - Default/Spanish'
+    )
+    name_en = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='Category name in English'
     )
     slug = models.SlugField(
         max_length=100,
@@ -28,7 +33,11 @@ class Category(models.Model):
     )
     description = models.TextField(
         blank=True,
-        help_text='Category description for SEO and display'
+        help_text='Category description - Default/Spanish'
+    )
+    description_en = models.TextField(
+        blank=True,
+        help_text='Category description in English'
     )
     icon = models.CharField(
         max_length=50,
@@ -91,7 +100,12 @@ class Product(models.Model):
     # Basic Information
     title = models.CharField(
         max_length=200,
-        help_text='Product title'
+        help_text='Product title - Default/Spanish'
+    )
+    title_en = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text='Product title in English'
     )
     slug = models.SlugField(
         max_length=200,
@@ -99,11 +113,20 @@ class Product(models.Model):
         help_text='URL-friendly version of the title'
     )
     description = models.TextField(
-        help_text='Full product description (supports markdown)'
+        help_text='Full product description (supports markdown) - Default/Spanish'
+    )
+    description_en = models.TextField(
+        blank=True,
+        help_text='Full product description in English'
     )
     short_description = models.CharField(
         max_length=300,
-        help_text='Brief description for cards and SEO meta'
+        help_text='Brief description for cards and SEO meta - Default/Spanish'
+    )
+    short_description_en = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text='Brief description in English'
     )
     
     # Categorization
@@ -122,11 +145,19 @@ class Product(models.Model):
     # Purpose & Impact
     purpose = models.TextField(
         blank=True,
-        help_text='Propósito del apadrinamiento - por qué es importante'
+        help_text='Propósito del apadrinamiento - Default/Spanish'
+    )
+    purpose_en = models.TextField(
+        blank=True,
+        help_text='Purpose in English'
     )
     impact_description = models.TextField(
         blank=True,
-        help_text='Descripción del impacto que genera el apadrinamiento'
+        help_text='Descripción del impacto - Default/Spanish'
+    )
+    impact_description_en = models.TextField(
+        blank=True,
+        help_text='Impact description in English'
     )
     
     # Pricing
@@ -170,7 +201,12 @@ class Product(models.Model):
     duration = models.CharField(
         max_length=50,
         blank=True,
-        help_text='Duración de la experiencia (ej: "4 horas", "3 días")'
+        help_text='Duración de la experiencia - Default/Spanish'
+    )
+    duration_en = models.CharField(
+        max_length=50,
+        blank=True,
+        help_text='Duration in English (e.g., "4 hours", "3 days")'
     )
     max_participants = models.PositiveIntegerField(
         null=True,
@@ -179,7 +215,11 @@ class Product(models.Model):
     )
     includes = models.JSONField(
         default=list,
-        help_text='Lista de lo que incluye (ej: ["Transporte", "Almuerzo"])'
+        help_text='Lista de lo que incluye - Default/Spanish'
+    )
+    includes_en = models.JSONField(
+        default=list,
+        help_text='What is included in English (e.g., ["Transport", "Lunch"])'
     )
     
     # Area-specific fields (for forests/lagoons)
@@ -209,7 +249,11 @@ class Product(models.Model):
     # Features & Highlights
     features = models.JSONField(
         default=list,
-        help_text='List of feature strings (e.g., ["Organic", "Vegan"])'
+        help_text='List of features - Default/Spanish'
+    )
+    features_en = models.JSONField(
+        default=list,
+        help_text='Features in English (e.g., ["Organic", "Vegan"])'
     )
     
     # Location (for Trees and Retreats)

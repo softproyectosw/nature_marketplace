@@ -34,10 +34,27 @@ class CategoryAdmin(admin.ModelAdmin):
     
     list_display = ['name', 'slug', 'is_active', 'display_order', 'created_at']
     list_filter = ['is_active', 'created_at']
-    search_fields = ['name', 'description']
+    search_fields = ['name', 'name_en', 'description']
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ['created_at', 'updated_at']
     ordering = ['display_order', 'name']
+    
+    fieldsets = (
+        ('Español (Default)', {
+            'fields': ('name', 'slug', 'description')
+        }),
+        ('English', {
+            'fields': ('name_en', 'description_en'),
+            'classes': ('collapse',)
+        }),
+        ('Configuración', {
+            'fields': ('icon', 'image_url', 'is_active', 'display_order')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
 
 
 class StockFilter(admin.SimpleListFilter):
@@ -93,18 +110,26 @@ class ProductAdmin(admin.ModelAdmin):
     ]
     list_editable = ['stock', 'is_active', 'is_featured']
     list_per_page = 25
-    search_fields = ['title', 'description', 'short_description', 'species']
+    search_fields = ['title', 'title_en', 'description', 'description_en', 'short_description', 'species']
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['created_at', 'updated_at']
     
     inlines = [ProductImageInline, ProductUpdateInline]
     
     fieldsets = (
-        ('Información Básica', {
+        ('Información Básica (Español)', {
             'fields': ('title', 'slug', 'short_description', 'description')
         }),
-        ('Propósito e Impacto', {
+        ('Basic Info (English)', {
+            'fields': ('title_en', 'short_description_en', 'description_en'),
+            'classes': ('collapse',)
+        }),
+        ('Propósito e Impacto (Español)', {
             'fields': ('purpose', 'impact_description')
+        }),
+        ('Purpose & Impact (English)', {
+            'fields': ('purpose_en', 'impact_description_en'),
+            'classes': ('collapse',)
         }),
         ('Categorización', {
             'fields': ('category', 'product_type', 'features')

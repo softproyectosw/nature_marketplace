@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { FavoriteButton } from './FavoriteButton';
 import { AddToCartButton } from '@/components/cart';
 import { getProducts, getCategories, Product, Category } from '@/lib/api/products';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 // Default categories (fallback if API fails)
 const defaultCategories = [
@@ -35,16 +37,47 @@ function getProductImage(product: Product): string {
 }
 
 // Helper to get price label
-function getPriceLabel(product: Product): string {
-  return product.pricing_type === 'annual' ? '/año' : '';
+function getPriceLabel(product: Product, perYear: string): string {
+  return product.pricing_type === 'annual' ? perYear : '';
 }
 
+// Category translation map (slug -> translation key)
+const categoryTranslationKeys: Record<string, string> = {
+  '': 'all',
+  'trees': 'trees',
+  'forests': 'forests',
+  'lagoons': 'lagoons',
+  'experiences': 'experiences',
+  'retreats': 'retreats',
+  'remedies': 'remedies',
+};
+
 export function ProductsGrid() {
-  const [activeCategory, setActiveCategory] = useState('');
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get('category') || '';
+  const { t } = useTranslation();
+  
+  const [activeCategory, setActiveCategory] = useState(categoryFromUrl);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState(defaultCategories);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Get translated category name
+  const getCategoryTranslation = (slug: string, fallbackName: string): string => {
+    const key = categoryTranslationKeys[slug];
+    if (key && t.products[key as keyof typeof t.products]) {
+      return t.products[key as keyof typeof t.products] as string;
+    }
+    return fallbackName;
+  };
+
+  // Update active category when URL changes
+  useEffect(() => {
+    if (categoryFromUrl !== activeCategory) {
+      setActiveCategory(categoryFromUrl);
+    }
+  }, [categoryFromUrl]);
 
   // Load categories
   useEffect(() => {
@@ -82,7 +115,7 @@ export function ProductsGrid() {
         setProducts(data.results || []);
       } catch (err) {
         console.error('Failed to load products:', err);
-        setError('Error al cargar productos. Intenta de nuevo.');
+        setError(t.products.error || 'Error loading products');
         setProducts([]);
       } finally {
         setIsLoading(false);
@@ -110,7 +143,7 @@ export function ProductsGrid() {
                 <span className="material-symbols-outlined text-sm">
                   {cat.icon}
                 </span>
-                {cat.name}
+                {getCategoryTranslation(cat.slug, cat.name)}
               </button>
             ))}
           </div>
@@ -141,7 +174,7 @@ export function ProductsGrid() {
                 onClick={() => window.location.reload()}
                 className="mt-4 px-4 py-2 bg-primary text-background-dark rounded-full text-sm font-medium"
               >
-                Reintentar
+                {t.products.retry}
               </button>
             </div>
           ) : products.length === 0 ? (
@@ -149,7 +182,7 @@ export function ProductsGrid() {
               <span className="material-symbols-outlined text-4xl text-white/40 mb-4 block">
                 search_off
               </span>
-              <p className="text-white/60">No hay productos en esta categoría</p>
+              <p className="text-white/60">{t.products.noProducts}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -174,7 +207,7 @@ export function ProductsGrid() {
                     {/* Content */}
                     <div className="space-y-2">
                       <p className="text-xs text-white/50 uppercase tracking-wide">
-                        {getCategoryName(product)}
+                        {getCategoryTranslation(getCategorySlug(product), getCategoryName(product))}
                       </p>
                       <h3 className="font-semibold text-white group-hover:text-primary transition-colors">
                         {product.title}
@@ -228,14 +261,14 @@ export function ProductsGrid() {
                       <div className="flex items-center justify-between pt-2">
                         <span className="text-lg font-bold text-primary">
                           ${product.price}
-                          {getPriceLabel(product)}
+                          {getPriceLabel(product, t.products.perYear)}
                         </span>
                         {product.co2_offset_kg && (
                           <span className="text-xs text-olive-light flex items-center gap-1">
                             <span className="material-symbols-outlined text-xs">
                               eco
                             </span>
-                            {product.co2_offset_kg} kg CO₂/año
+                            {product.co2_offset_kg} kg CO₂/{t.products.perYear.replace('/', '')}
                           </span>
                         )}
                       </div>
@@ -249,7 +282,7 @@ export function ProductsGrid() {
                         id: product.id,
                         title: product.title,
                         price: Number(product.price),
-                        priceLabel: getPriceLabel(product),
+                        priceLabel: getPriceLabel(product, t.products.perYear),
                         image: getProductImage(product),
                         category: getCategorySlug(product),
                         slug: `${getCategorySlug(product)}/${product.slug}`,
@@ -270,7 +303,7 @@ export function ProductsGrid() {
                           ? 'text-orange-400' 
                           : 'text-white/40'
                     }`}>
-                      {product.stock === 0 ? 'Agotado' : `${product.stock} disponibles`}
+                      {product.stock === 0 ? t.products.outOfStock : `${product.stock} ${t.products.available}`}
                     </p>
                   )}
                 </div>

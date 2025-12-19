@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { BottomNav } from '@/components/ui';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 interface CartItem {
   id: number;
@@ -28,6 +29,7 @@ const initialCartItems: CartItem[] = [
 ];
 
 export default function CartPage() {
+  const { t } = useTranslation();
   const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems);
 
   const updateQuantity = (id: number, delta: number) => {
@@ -61,9 +63,9 @@ export default function CartPage() {
           <div className="flex items-center justify-between">
             <Link href="/products" className="flex items-center gap-2 text-white/70 hover:text-white">
               <span className="material-symbols-outlined">arrow_back</span>
-              <span>Back</span>
+              <span>{t.common.back}</span>
             </Link>
-            <h1 className="text-lg font-bold">Your Cart</h1>
+            <h1 className="text-lg font-bold">{t.cart.title}</h1>
             <div className="w-16" />
           </div>
         </div>
@@ -75,16 +77,16 @@ export default function CartPage() {
             <span className="material-symbols-outlined text-6xl text-white/30 mb-4 block">
               shopping_cart
             </span>
-            <h2 className="text-xl font-bold mb-2">Your cart is empty</h2>
+            <h2 className="text-xl font-bold mb-2">{t.cart.empty.title}</h2>
             <p className="text-white/60 mb-6">
-              Start exploring and add items to your cart
+              {t.cart.empty.subtitle}
             </p>
             <Link
               href="/products"
               className="inline-flex items-center gap-2 bg-primary text-background-dark font-bold px-6 py-3 rounded-full hover:bg-primary/90 transition-all"
             >
               <span className="material-symbols-outlined">explore</span>
-              Explore Products
+              {t.cart.empty.cta}
             </Link>
           </div>
         ) : (
@@ -159,11 +161,11 @@ export default function CartPage() {
             {/* Summary */}
             <div className="border-t border-white/10 pt-6 space-y-4">
               <div className="flex justify-between text-lg">
-                <span className="text-white/70">Subtotal</span>
+                <span className="text-white/70">{t.cart.subtotal}</span>
                 <span className="font-bold">${subtotal}</span>
               </div>
               <p className="text-sm text-white/50">
-                Taxes and fees calculated at checkout
+                {t.cart.taxes}
               </p>
             </div>
 
@@ -174,10 +176,10 @@ export default function CartPage() {
                 className="w-full flex items-center justify-center gap-2 bg-primary text-background-dark font-bold py-4 rounded-full hover:bg-primary/90 transition-all"
               >
                 <span className="material-symbols-outlined">lock</span>
-                Proceed to Checkout
+                {t.cart.checkout}
               </Link>
               <p className="text-center text-xs text-white/40 mt-3">
-                Secure payment powered by Stripe
+                {t.cart.securePayment}
               </p>
             </div>
           </>

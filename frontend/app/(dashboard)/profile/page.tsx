@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { BottomNav } from '@/components/ui';
 import { PhotoUpload } from '@/components/profile';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 /**
  * Profile Page - Based on Stitch design
@@ -54,6 +55,7 @@ const upcomingRetreats = [
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -123,7 +125,7 @@ export default function ProfilePage() {
   if (authLoading || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background-dark">
-        <div className="animate-pulse text-white/60">Cargando perfil...</div>
+        <div className="animate-pulse text-white/60">{t.common.loading}</div>
       </div>
     );
   }
@@ -132,7 +134,7 @@ export default function ProfilePage() {
   if (!user && !profile) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background-dark">
-        <div className="animate-pulse text-white/60">Cargando...</div>
+        <div className="animate-pulse text-white/60">{t.common.loading}</div>
       </div>
     );
   }
@@ -150,9 +152,9 @@ export default function ProfilePage() {
         <Link href="/" className="p-2">
           <span className="material-symbols-outlined text-white text-xl">chevron_left</span>
         </Link>
-        <h1 className="text-lg font-bold">My Profile</h1>
+        <h1 className="text-lg font-bold">{t.profile.title}</h1>
         <Link href="/profile/edit" className="text-primary text-sm font-medium">
-          Edit
+          {t.profile.edit}
         </Link>
       </div>
 
@@ -164,8 +166,8 @@ export default function ProfilePage() {
           onUploadError={(err) => setError(err)}
         />
         <h2 className="text-xl font-bold mb-1 mt-4">{displayName}</h2>
-        <p className="text-primary text-sm">Nivel: {stats.level}</p>
-        <p className="text-white/50 text-xs">{stats.points} puntos verdes</p>
+        <p className="text-primary text-sm">{t.profile.level}: {stats.level}</p>
+        <p className="text-white/50 text-xs">{stats.points} {t.profile.greenPoints}</p>
         {error && (
           <p className="text-red-400 text-xs mt-2">{error}</p>
         )}
@@ -176,22 +178,22 @@ export default function ProfilePage() {
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="bg-[#1a3a2a] rounded-xl p-4 text-center border border-primary/20">
             <span className="text-2xl font-bold text-primary block">{stats.treesAdopted}</span>
-            <span className="text-xs text-white/60">Trees Adopted</span>
+            <span className="text-xs text-white/60">{t.profile.treesAdopted}</span>
           </div>
           <div className="bg-[#1a3a2a] rounded-xl p-4 text-center border border-primary/20">
             <span className="text-2xl font-bold text-primary block">{stats.retreatsBooked}</span>
-            <span className="text-xs text-white/60">Retreats Booked</span>
+            <span className="text-xs text-white/60">{t.profile.retreatsBooked}</span>
           </div>
         </div>
         <div className="bg-[#1a3a2a] rounded-xl p-4 text-center border border-primary/20">
           <span className="text-2xl font-bold text-primary block">{stats.totalOrders}</span>
-          <span className="text-xs text-white/60">Total Orders</span>
+          <span className="text-xs text-white/60">{t.profile.totalOrders}</span>
         </div>
       </div>
 
       {/* My Adopted Trees */}
       <div className="px-4 mb-6">
-        <h3 className="text-base font-bold mb-3">My Adopted Trees</h3>
+        <h3 className="text-base font-bold mb-3">{t.profile.myTrees}</h3>
         <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
           {adoptedTrees.map((tree) => (
             <div key={tree.id} className="flex-shrink-0 w-40">
@@ -202,7 +204,7 @@ export default function ProfilePage() {
               <p className="text-white font-medium text-sm">{tree.name}</p>
               <p className="text-white/50 text-xs mb-2">{tree.adoptedDate}</p>
               <button className="w-full bg-primary text-background-dark text-xs font-bold py-2 rounded-lg hover:bg-primary/90 transition-all">
-                Track Progress
+                {t.profile.trackProgress}
               </button>
             </div>
           ))}
@@ -211,7 +213,7 @@ export default function ProfilePage() {
 
       {/* Upcoming Retreats */}
       <div className="px-4 mb-6">
-        <h3 className="text-base font-bold mb-3">Upcoming Retreats</h3>
+        <h3 className="text-base font-bold mb-3">{t.profile.upcomingRetreats}</h3>
         {upcomingRetreats.map((retreat) => (
           <div key={retreat.id} className="bg-[#1a3a2a] rounded-xl overflow-hidden border border-primary/20">
             <div
@@ -224,7 +226,7 @@ export default function ProfilePage() {
                 <p className="text-white/50 text-xs">{retreat.date} • {retreat.location}</p>
               </div>
               <button className="bg-primary text-background-dark text-xs font-bold px-4 py-2 rounded-lg hover:bg-primary/90 transition-all">
-                View Details
+                {t.profile.viewDetails}
               </button>
             </div>
           </div>
@@ -235,22 +237,22 @@ export default function ProfilePage() {
       <div className="px-4 space-y-1">
         <Link href="/orders" className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors">
           <span className="material-symbols-outlined text-white/60">receipt_long</span>
-          <span className="font-medium text-white/80 flex-1">Order History</span>
+          <span className="font-medium text-white/80 flex-1">{t.profile.orderHistory}</span>
           <span className="material-symbols-outlined text-white/40 text-sm">chevron_right</span>
         </Link>
         <Link href="/settings" className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors">
           <span className="material-symbols-outlined text-white/60">settings</span>
-          <span className="font-medium text-white/80 flex-1">Account Settings</span>
+          <span className="font-medium text-white/80 flex-1">{t.profile.accountSettings}</span>
           <span className="material-symbols-outlined text-white/40 text-sm">chevron_right</span>
         </Link>
         <Link href="/payment-methods" className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors">
           <span className="material-symbols-outlined text-white/60">credit_card</span>
-          <span className="font-medium text-white/80 flex-1">Payment Methods</span>
+          <span className="font-medium text-white/80 flex-1">{t.profile.paymentMethods}</span>
           <span className="material-symbols-outlined text-white/40 text-sm">chevron_right</span>
         </Link>
         <Link href="/help" className="flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors">
           <span className="material-symbols-outlined text-white/60">help</span>
-          <span className="font-medium text-white/80 flex-1">Help & Support</span>
+          <span className="font-medium text-white/80 flex-1">{t.profile.helpSupport}</span>
           <span className="material-symbols-outlined text-white/40 text-sm">chevron_right</span>
         </Link>
         <button
@@ -258,7 +260,7 @@ export default function ProfilePage() {
           className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-white/5 transition-colors text-left"
         >
           <span className="material-symbols-outlined text-red-400">logout</span>
-          <span className="font-medium text-red-400 flex-1">Logout</span>
+          <span className="font-medium text-red-400 flex-1">{t.common.logout}</span>
         </button>
       </div>
 

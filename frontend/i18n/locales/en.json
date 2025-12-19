@@ -1,0 +1,188 @@
+{
+  "common": {
+    "explore": "Explore",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Logout",
+    "profile": "Profile",
+    "favorites": "Favorites",
+    "cart": "Cart",
+    "home": "Home",
+    "products": "Products",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "landing": {
+    "hero": {
+      "title": "Reconnect with Nature",
+      "subtitle": "Discover retreats, adopt a tree, and find natural remedies to bring nature closer to you."
+    },
+    "cta": {
+      "exploreMarketplace": "Explore Marketplace",
+      "createAccount": "Create Free Account",
+      "viewProducts": "View Products",
+      "exploreAllProducts": "Explore All Products"
+    },
+    "tree": {
+      "title": "Watch Your Impact Grow",
+      "subtitle": "Every tree you adopt absorbs CO₂ and helps restore ecosystems. Track your tree's growth in real-time.",
+      "co2Absorbed": "CO₂ Absorbed",
+      "height": "Height",
+      "months": "Months",
+      "adoptMe": "Adopt Me!"
+    },
+    "features": {
+      "title": "What You Can Do",
+      "subtitle": "From adopting trees to booking wellness retreats, make a positive impact on the planet.",
+      "trees": {
+        "title": "Tree Adoptions",
+        "description": "Adopt a tree and receive updates as it grows. Visit it anytime."
+      },
+      "retreats": {
+        "title": "Wellness Retreats",
+        "description": "Book immersive experiences in nature. Forest bathing, yoga, and more."
+      },
+      "products": {
+        "title": "Natural Products",
+        "description": "Discover sustainable, eco-friendly products that make a difference."
+      }
+    },
+    "impact": {
+      "title": "Our Collective Impact",
+      "treesAdopted": "Trees Adopted",
+      "co2Offset": "Tons CO₂ Offset",
+      "activeSponsors": "Active Sponsors",
+      "retreatLocations": "Retreat Locations"
+    },
+    "finalCta": {
+      "title": "Ready to Start?",
+      "subtitle": "Join thousands making a positive impact on the planet."
+    },
+    "featuredProducts": "Featured Products"
+  },
+  "products": {
+    "title": "Sponsor and Make an Impact",
+    "subtitle": "Discover wellness retreats and sponsor trees that grow with you. Each sponsorship creates a real bond with nature.",
+    "all": "All",
+    "trees": "Trees",
+    "forests": "Forests",
+    "lagoons": "Lagoons",
+    "experiences": "Experiences",
+    "retreats": "Retreats",
+    "remedies": "Remedies",
+    "addToCart": "Add",
+    "addedToCart": "Added!",
+    "outOfStock": "Out of Stock",
+    "perYear": "/year",
+    "available": "available",
+    "error": "Error loading products. Please try again.",
+    "retry": "Retry",
+    "noProducts": "No products in this category"
+  },
+  "favorites": {
+    "title": "Your Favorites",
+    "empty": {
+      "title": "No favorites yet",
+      "subtitle": "Explore the marketplace and save products you love.",
+      "cta": "Explore Products"
+    },
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": {
+      "title": "Your cart is empty",
+      "subtitle": "Start exploring and add items to your cart",
+      "cta": "Explore Products"
+    },
+    "subtotal": "Subtotal",
+    "taxes": "Taxes and fees calculated at checkout",
+    "checkout": "Proceed to Checkout",
+    "securePayment": "Secure payment powered by Stripe",
+    "continueShopping": "Continue Shopping",
+    "maxQuantity": "Max quantity reached",
+    "moreAvailable": "more available",
+    "onlyAvailable": "Only available"
+  },
+  "profile": {
+    "title": "My Profile",
+    "edit": "Edit",
+    "level": "Level",
+    "greenPoints": "green points",
+    "treesAdopted": "Trees Adopted",
+    "retreatsBooked": "Retreats Booked",
+    "totalOrders": "Total Orders",
+    "myTrees": "My Adopted Trees",
+    "trackProgress": "Track Progress",
+    "upcomingRetreats": "Upcoming Retreats",
+    "viewDetails": "View Details",
+    "orderHistory": "Order History",
+    "accountSettings": "Account Settings",
+    "paymentMethods": "Payment Methods",
+    "helpSupport": "Help & Support"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to continue your green journey",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up"
+    },
+    "register": {
+      "title": "Join Nature",
+      "subtitle": "Create your account and start making an impact",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign In"
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved"
+  },
+  "nav": {
+    "home": "Home",
+    "sponsor": "Sponsor",
+    "favorites": "Favorites",
+    "profile": "Profile"
+  },
+  "productDetail": {
+    "characteristics": "Characteristics",
+    "description": "Description",
+    "includes": "Includes",
+    "benefits": "Benefits",
+    "reviews": "Reviews",
+    "maxParticipants": "Max.",
+    "people": "people"
+  },
+  "dashboard": {
+    "hello": "Hello",
+    "searchPlaceholder": "Search trees, experiences...",
+    "featured": "Featured for Sponsorship",
+    "noFeatured": "No featured products available",
+    "newAvailable": "New Available",
+    "noProducts": "No products available in this category"
+  },
+  "userMenu": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "myProfile": "My Profile",
+    "favorites": "Favorites",
+    "myTrees": "My Trees",
+    "orders": "Orders",
+    "signOut": "Sign Out"
+  }
+}

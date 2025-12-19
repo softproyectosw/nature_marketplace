@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 /**
  * Bottom Navigation component
@@ -12,19 +13,20 @@ import { cn } from '@/lib/utils';
 interface NavItem {
   href: string;
   icon: string;
-  label: string;
+  labelKey: 'home' | 'sponsor' | 'favorites' | 'profile';
   fillOnActive?: boolean;
 }
 
 const navItems: NavItem[] = [
-  { href: '/', icon: 'home', label: 'Inicio' },
-  { href: '/products', icon: 'eco', label: 'Apadrinar' },
-  { href: '/favorites', icon: 'favorite', label: 'Favoritos', fillOnActive: true },
-  { href: '/profile', icon: 'person', label: 'Perfil' },
+  { href: '/', icon: 'home', labelKey: 'home' },
+  { href: '/products', icon: 'eco', labelKey: 'sponsor' },
+  { href: '/favorites', icon: 'favorite', labelKey: 'favorites', fillOnActive: true },
+  { href: '/profile', icon: 'person', labelKey: 'profile' },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
@@ -57,7 +59,7 @@ export function BottomNav() {
                 {item.icon}
               </span>
               <p className={cn('text-xs', active ? 'font-bold' : 'font-medium')}>
-                {item.label}
+                {t.nav[item.labelKey]}
               </p>
             </Link>
           );

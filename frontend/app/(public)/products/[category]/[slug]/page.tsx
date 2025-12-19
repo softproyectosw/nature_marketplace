@@ -1,7 +1,5 @@
-import Link from 'next/link';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { ProductDetailClient } from './ProductDetailClient';
+import { ProductDetailWrapper } from './ProductDetailWrapper';
 
 // Use internal Docker network URL for server-side fetches
 const API_URL = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://backend:8000';
@@ -13,7 +11,7 @@ interface ProductPageProps {
   };
 }
 
-// Fetch product from API
+// Fetch product from API (server-side, default language for SEO)
 async function getProduct(slug: string) {
   try {
     const res = await fetch(`${API_URL}/api/products/${slug}/`, {
@@ -35,7 +33,7 @@ export async function generateMetadata({
   
   if (!product) {
     return {
-      title: 'Producto no encontrado | Nature Marketplace',
+      title: 'Product not found | Nature Marketplace',
     };
   }
 
@@ -50,12 +48,6 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductDetailPage({ params }: ProductPageProps) {
-  const product = await getProduct(params.slug);
-
-  if (!product) {
-    notFound();
-  }
-
-  return <ProductDetailClient product={product} category={params.category} />;
+export default function ProductDetailPage({ params }: ProductPageProps) {
+  return <ProductDetailWrapper slug={params.slug} category={params.category} />;
 }

@@ -1,0 +1,188 @@
+{
+  "common": {
+    "explore": "Explorar",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "favorites": "Favoritos",
+    "cart": "Carrito",
+    "home": "Inicio",
+    "products": "Productos",
+    "back": "Volver",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "landing": {
+    "hero": {
+      "title": "Reconecta con la Naturaleza",
+      "subtitle": "Descubre retiros, apadrina un árbol y encuentra remedios naturales para acercarte a la naturaleza."
+    },
+    "cta": {
+      "exploreMarketplace": "Explorar Marketplace",
+      "createAccount": "Crear Cuenta Gratis",
+      "viewProducts": "Ver Productos",
+      "exploreAllProducts": "Explorar Todos los Productos"
+    },
+    "tree": {
+      "title": "Mira Crecer Tu Impacto",
+      "subtitle": "Cada árbol que adoptas absorbe CO₂ y ayuda a restaurar ecosistemas. Sigue el crecimiento de tu árbol en tiempo real.",
+      "co2Absorbed": "CO₂ Absorbido",
+      "height": "Altura",
+      "months": "Meses",
+      "adoptMe": "¡Adóptame!"
+    },
+    "features": {
+      "title": "Lo Que Puedes Hacer",
+      "subtitle": "Desde apadrinar árboles hasta reservar retiros de bienestar, genera un impacto positivo en el planeta.",
+      "trees": {
+        "title": "Apadrina Árboles",
+        "description": "Apadrina un árbol y recibe actualizaciones mientras crece. Visítalo cuando quieras."
+      },
+      "retreats": {
+        "title": "Retiros de Bienestar",
+        "description": "Reserva experiencias inmersivas en la naturaleza. Baños de bosque, yoga y más."
+      },
+      "products": {
+        "title": "Productos Naturales",
+        "description": "Descubre productos sostenibles y ecológicos que hacen la diferencia."
+      }
+    },
+    "impact": {
+      "title": "Nuestro Impacto Colectivo",
+      "treesAdopted": "Árboles Apadrinados",
+      "co2Offset": "Tons CO₂ Compensado",
+      "activeSponsors": "Padrinos Activos",
+      "retreatLocations": "Ubicaciones de Retiros"
+    },
+    "finalCta": {
+      "title": "¿Listo para Empezar?",
+      "subtitle": "Únete a miles generando un impacto positivo en el planeta."
+    },
+    "featuredProducts": "Productos destacados"
+  },
+  "products": {
+    "title": "Apadrina y Genera Impacto",
+    "subtitle": "Descubre retiros de bienestar y apadrina árboles que crecen contigo. Cada apadrinamiento crea un vínculo real con la naturaleza.",
+    "all": "Todos",
+    "trees": "Árboles",
+    "forests": "Bosques",
+    "lagoons": "Lagunas",
+    "experiences": "Experiencias",
+    "retreats": "Retiros",
+    "remedies": "Remedios",
+    "addToCart": "Agregar",
+    "addedToCart": "¡Agregado!",
+    "outOfStock": "Agotado",
+    "perYear": "/año",
+    "available": "disponibles",
+    "error": "Error al cargar productos. Intenta de nuevo.",
+    "retry": "Reintentar",
+    "noProducts": "No hay productos en esta categoría"
+  },
+  "favorites": {
+    "title": "Tus Favoritos",
+    "empty": {
+      "title": "No tienes favoritos aún",
+      "subtitle": "Explora el marketplace y guarda los productos que más te gusten.",
+      "cta": "Explorar Productos"
+    },
+    "addToFavorites": "Agregar a favoritos",
+    "removeFromFavorites": "Quitar de favoritos"
+  },
+  "cart": {
+    "title": "Tu Carrito",
+    "empty": {
+      "title": "Tu carrito está vacío",
+      "subtitle": "Comienza a explorar y agrega productos a tu carrito",
+      "cta": "Explorar Productos"
+    },
+    "subtotal": "Subtotal",
+    "taxes": "Impuestos y tarifas calculados en el checkout",
+    "checkout": "Proceder al Pago",
+    "securePayment": "Pago seguro con Stripe",
+    "continueShopping": "Continuar Comprando",
+    "maxQuantity": "Cantidad máxima alcanzada",
+    "moreAvailable": "más disponibles",
+    "onlyAvailable": "Solo disponibles"
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "edit": "Editar",
+    "level": "Nivel",
+    "greenPoints": "puntos verdes",
+    "treesAdopted": "Árboles Apadrinados",
+    "retreatsBooked": "Retiros Reservados",
+    "totalOrders": "Total de Órdenes",
+    "myTrees": "Mis Árboles Apadrinados",
+    "trackProgress": "Ver Progreso",
+    "upcomingRetreats": "Próximos Retiros",
+    "viewDetails": "Ver Detalles",
+    "orderHistory": "Historial de Órdenes",
+    "accountSettings": "Configuración de Cuenta",
+    "paymentMethods": "Métodos de Pago",
+    "helpSupport": "Ayuda y Soporte"
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido de Nuevo",
+      "subtitle": "Inicia sesión para continuar tu viaje verde",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar Sesión",
+      "noAccount": "¿No tienes cuenta?",
+      "signUp": "Regístrate"
+    },
+    "register": {
+      "title": "Únete a Nature",
+      "subtitle": "Crea tu cuenta y comienza a generar impacto",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "submit": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Inicia Sesión"
+    }
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados"
+  },
+  "nav": {
+    "home": "Inicio",
+    "sponsor": "Apadrinar",
+    "favorites": "Favoritos",
+    "profile": "Perfil"
+  },
+  "productDetail": {
+    "characteristics": "Características",
+    "description": "Descripción",
+    "includes": "Incluye",
+    "benefits": "Beneficios",
+    "reviews": "Reseñas",
+    "maxParticipants": "Máx.",
+    "people": "personas"
+  },
+  "dashboard": {
+    "hello": "Hola",
+    "searchPlaceholder": "Buscar árboles, experiencias...",
+    "featured": "Destacados para Apadrinar",
+    "noFeatured": "No hay productos destacados disponibles",
+    "newAvailable": "Nuevos Disponibles",
+    "noProducts": "No hay productos disponibles en esta categoría"
+  },
+  "userMenu": {
+    "signIn": "Iniciar Sesión",
+    "signUp": "Registrarse",
+    "myProfile": "Mi Perfil",
+    "favorites": "Favoritos",
+    "myTrees": "Mis Árboles",
+    "orders": "Órdenes",
+    "signOut": "Cerrar Sesión"
+  }
+}

@@ -7,6 +7,7 @@ import { BottomNav } from '@/components/ui';
 import { FavoriteButton, getLocalFavorites } from '@/components/products';
 import { AddToCartButton } from '@/components/cart';
 import { getProducts, Product } from '@/lib/api/products';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 // Helper to get product image
 function getProductImage(product: Product): string {
@@ -22,12 +23,32 @@ function getCategorySlug(product: Product): string {
   return product.category?.slug || product.category_slug || 'products';
 }
 
-// Helper to get price label
-function getPriceLabel(product: Product): string {
-  return product.pricing_type === 'annual' ? '/año' : '';
-}
+// Category translation map
+const categoryTranslationKeys: Record<string, string> = {
+  'trees': 'trees',
+  'forests': 'forests',
+  'lagoons': 'lagoons',
+  'experiences': 'experiences',
+  'retreats': 'retreats',
+  'remedies': 'remedies',
+};
 
 export default function FavoritesPage() {
+  const { t } = useTranslation();
+
+  // Helper to get price label with translation
+  const getPriceLabel = (product: Product): string => {
+    return product.pricing_type === 'annual' ? t.products.perYear : '';
+  };
+
+  // Get translated category name
+  const getCategoryTranslation = (slug: string, fallbackName: string): string => {
+    const key = categoryTranslationKeys[slug];
+    if (key && t.products[key as keyof typeof t.products]) {
+      return t.products[key as keyof typeof t.products] as string;
+    }
+    return fallbackName;
+  };
   const [favorites, setFavorites] = useState<Product[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -93,7 +114,7 @@ export default function FavoritesPage() {
           >
             <span className="material-symbols-outlined text-white">arrow_back</span>
           </Link>
-          <h1 className="text-2xl font-bold text-white">Tus Favoritos</h1>
+          <h1 className="text-2xl font-bold text-white">{t.favorites.title}</h1>
         </div>
       </div>
 
@@ -115,15 +136,15 @@ export default function FavoritesPage() {
           <span className="material-symbols-outlined text-6xl mb-4 text-white/30">
             favorite_border
           </span>
-          <h3 className="text-xl font-bold text-white mb-2">No tienes favoritos aún</h3>
+          <h3 className="text-xl font-bold text-white mb-2">{t.favorites.empty.title}</h3>
           <p className="text-white/60 mb-6 max-w-sm">
-            Explora el marketplace y guarda los productos que más te gusten.
+            {t.favorites.empty.subtitle}
           </p>
           <Link
             href="/products"
             className="px-6 py-3 bg-primary text-background-dark rounded-full font-bold hover:bg-primary/90 transition-colors"
           >
-            Explorar Productos
+            {t.favorites.empty.cta}
           </Link>
         </div>
       ) : (
@@ -150,7 +171,7 @@ export default function FavoritesPage() {
                   {/* Content */}
                   <div className="space-y-2">
                     <p className="text-xs text-white/50 uppercase tracking-wide">
-                      {product.category?.name || product.category_name}
+                      {getCategoryTranslation(getCategorySlug(product), product.category?.name || product.category_name || '')}
                     </p>
                     <h3 className="font-semibold text-white group-hover:text-primary transition-colors">
                       {product.title}

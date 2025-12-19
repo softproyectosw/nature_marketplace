@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useCart, CartItem } from '@/contexts/CartContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 interface AddToCartButtonProps {
   product: Omit<CartItem, 'quantity'>;
@@ -11,6 +12,7 @@ interface AddToCartButtonProps {
 
 export function AddToCartButton({ product, variant = 'icon', className = '' }: AddToCartButtonProps) {
   const { addItem, getItemQuantity, canAddMore } = useCart();
+  const { t } = useTranslation();
   const [isAdding, setIsAdding] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,12 +51,12 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
 
   const buttonDisabled = isAdding || isOutOfStock || !canAdd;
   const buttonText = isOutOfStock 
-    ? 'Out of Stock' 
+    ? t.products.outOfStock 
     : !canAdd 
-      ? 'Max in Cart' 
+      ? 'Max' 
       : isAdding 
-        ? 'Added!' 
-        : 'Add';
+        ? t.products.addedToCart 
+        : t.products.addToCart;
 
   if (variant === 'icon') {
     return (
@@ -124,10 +126,10 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
         </span>
         <span>
           {isOutOfStock 
-            ? 'Out of Stock' 
+            ? t.products.outOfStock 
             : isAdding 
-              ? 'Added to Cart!' 
-              : `Add to Cart - $${product.price}`}
+              ? t.products.addedToCart 
+              : `${t.products.addToCart} - $${product.price}`}
         </span>
         {currentQty > 0 && !isOutOfStock && (
           <span className="bg-background-dark/20 px-2 py-0.5 rounded text-sm">

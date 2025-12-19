@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { CartButton } from '@/components/cart';
 import { UserMenu } from '@/components/auth';
+import { LanguageSelector } from '@/components/ui';
 
 export function Header() {
   return (
@@ -16,6 +17,7 @@ export function Header() {
             <span className="font-bold text-white">Nature Marketplace</span>
           </Link>
           <div className="flex items-center gap-3">
+            <LanguageSelector />
             <CartButton />
             <UserMenu />
           </div>

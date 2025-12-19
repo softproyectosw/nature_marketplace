@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AddToCartButton } from '@/components/cart';
 import { FavoriteButton } from '@/components/products';
+import { LanguageSelector } from '@/components/ui';
+import { useTranslation } from '@/contexts/LanguageContext';
 import type { Product } from '@/lib/api/products';
 
 interface ProductDetailClientProps {
@@ -63,12 +65,49 @@ function StarRating({ rating }: { rating: number | string }) {
   );
 }
 
+// Category translation map
+const categoryTranslationKeys: Record<string, string> = {
+  'trees': 'trees',
+  'forests': 'forests',
+  'lagoons': 'lagoons',
+  'experiences': 'experiences',
+  'retreats': 'retreats',
+  'remedies': 'remedies',
+};
+
 export function ProductDetailClient({ product, category }: ProductDetailClientProps) {
   const [activeImage, setActiveImage] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const { t } = useTranslation();
   
   const images = (product.gallery && product.gallery.length > 0)
     ? product.gallery 
     : [{ id: 0, url: getProductImage(product), alt_text: product.title, is_primary: true }];
+
+  // Auto-play carousel
+  useEffect(() => {
+    if (!isAutoPlaying || images.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    }, 4000); // Change image every 4 seconds
+    
+    return () => clearInterval(interval);
+  }, [isAutoPlaying, images.length]);
+
+  // Get translated category name
+  const getCategoryTranslation = (slug: string, fallbackName: string): string => {
+    const key = categoryTranslationKeys[slug];
+    if (key && t.products[key as keyof typeof t.products]) {
+      return t.products[key as keyof typeof t.products] as string;
+    }
+    return fallbackName;
+  };
+
+  // Get price label based on language
+  const getPriceLabelTranslated = (): string => {
+    return product.pricing_type === 'annual' ? t.products.perYear : '';
+  };
 
   // Generate highlights based on product type
   const highlights = [];
@@ -79,13 +118,13 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
     highlights.push({ icon: 'schedule', text: product.duration });
   }
   if (product.co2_offset_kg) {
-    highlights.push({ icon: 'eco', text: `${product.co2_offset_kg} kg CO₂/año` });
+    highlights.push({ icon: 'eco', text: `${product.co2_offset_kg} kg CO₂${t.products.perYear}` });
   }
   if (product.area_size) {
     highlights.push({ icon: 'square_foot', text: product.area_size });
   }
   if (product.max_participants) {
-    highlights.push({ icon: 'group', text: `Máx. ${product.max_participants} personas` });
+    highlights.push({ icon: 'group', text: `${t.productDetail.maxParticipants} ${product.max_participants}` });
   }
   if (product.species) {
     highlights.push({ icon: 'park', text: product.species });
@@ -97,33 +136,84 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
       <div className="sticky top-0 z-20 flex items-center bg-background-dark/95 p-4 pb-2 justify-between backdrop-blur-md">
         <Link
           href="/products"
-          className="flex size-12 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors"
         >
           <span className="material-symbols-outlined text-2xl">arrow_back</span>
         </Link>
         <h2 className="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
-          {product.category?.name || category}
+          {getCategoryTranslation(product.category?.slug || category, product.category?.name || category)}
         </h2>
-        <FavoriteButton productId={product.id} className="size-12" />
+        <div className="flex items-center gap-1">
+          <LanguageSelector />
+          <FavoriteButton productId={product.id} className="size-10" />
+        </div>
       </div>
 
       <main className="flex-grow">
         {/* Image Gallery */}
         <div className="px-4">
-          {/* Main Image */}
-          <div
-            className="w-full aspect-[4/3] bg-cover bg-center rounded-xl mb-3"
-            style={{ backgroundImage: `url("${images[activeImage]?.url || getProductImage(product)}")` }}
-          />
+          {/* Main Image with Navigation */}
+          <div className="relative max-w-2xl mx-auto">
+            <div
+              className="w-full aspect-[16/10] bg-cover bg-center rounded-xl"
+              style={{ backgroundImage: `url("${images[activeImage]?.url || getProductImage(product)}")` }}
+              onClick={() => setIsAutoPlaying(false)}
+            />
+            
+            {/* Navigation Arrows */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={() => {
+                    setIsAutoPlaying(false);
+                    setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                >
+                  <span className="material-symbols-outlined">chevron_left</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setIsAutoPlaying(false);
+                    setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                >
+                  <span className="material-symbols-outlined">chevron_right</span>
+                </button>
+              </>
+            )}
+            
+            {/* Dots Indicator */}
+            {images.length > 1 && (
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setIsAutoPlaying(false);
+                      setActiveImage(idx);
+                    }}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      activeImage === idx ? 'bg-primary w-6' : 'bg-white/50 hover:bg-white/80'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
           
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+            <div className="flex gap-2 overflow-x-auto no-scrollbar py-3 justify-center">
               {images.map((img, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setActiveImage(idx)}
-                  className={`flex-shrink-0 w-20 h-20 rounded-lg bg-cover bg-center border-2 transition-all ${
+                  onClick={() => {
+                    setIsAutoPlaying(false);
+                    setActiveImage(idx);
+                  }}
+                  className={`flex-shrink-0 w-16 h-16 rounded-lg bg-cover bg-center border-2 transition-all ${
                     activeImage === idx ? 'border-primary' : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                   style={{ backgroundImage: `url("${img.url}")` }}
@@ -138,7 +228,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1">
               <p className="text-xs text-white/50 uppercase tracking-wide mb-1">
-                {product.category?.name}
+                {getCategoryTranslation(product.category?.slug || category, product.category?.name || '')}
               </p>
               <h1 className="text-white text-2xl font-bold leading-tight">
                 {product.title}
@@ -152,7 +242,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
                 ${product.price}
               </p>
               <p className="text-white/50 text-sm">
-                {getPriceLabel(product)}
+                {getPriceLabelTranslated()}
               </p>
             </div>
           </div>
@@ -161,7 +251,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
           <div className="flex items-center gap-2 mt-3">
             <StarRating rating={product.rating} />
             <p className="text-white text-sm font-medium">
-              {product.rating} ({product.reviews_count} reviews)
+              {product.rating} ({product.reviews_count} {t.productDetail.reviews})
             </p>
           </div>
           
@@ -177,7 +267,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
               <span className="material-symbols-outlined text-sm">
                 {product.stock === 0 ? 'block' : 'check_circle'}
               </span>
-              {product.stock === 0 ? 'Agotado' : `${product.stock} disponibles`}
+              {product.stock === 0 ? t.products.outOfStock : `${product.stock} ${t.products.available}`}
             </div>
           )}
         </div>
@@ -185,7 +275,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
         {/* Highlights */}
         {highlights.length > 0 && (
           <div className="px-4 pt-6">
-            <h3 className="text-lg font-bold text-white mb-3">Características</h3>
+            <h3 className="text-lg font-bold text-white mb-3">{t.productDetail.characteristics}</h3>
             <div className="grid grid-cols-2 gap-3">
               {highlights.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
@@ -203,7 +293,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
 
         {/* Description */}
         <div className="px-4 pt-6">
-          <h3 className="text-lg font-bold text-white mb-2">Descripción</h3>
+          <h3 className="text-lg font-bold text-white mb-2">{t.productDetail.description}</h3>
           <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line">
             {product.description}
           </p>
@@ -212,7 +302,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
         {/* Includes (for experiences) */}
         {product.includes && product.includes.length > 0 && (
           <div className="px-4 pt-6">
-            <h3 className="text-lg font-bold text-white mb-3">Incluye</h3>
+            <h3 className="text-lg font-bold text-white mb-3">{t.productDetail.includes}</h3>
             <ul className="space-y-2">
               {product.includes.map((item, idx) => (
                 <li key={idx} className="flex items-center gap-2 text-white/70 text-sm">
@@ -227,7 +317,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
         {/* Features */}
         {product.features && product.features.length > 0 && (
           <div className="px-4 pt-6">
-            <h3 className="text-lg font-bold text-white mb-3">Beneficios</h3>
+            <h3 className="text-lg font-bold text-white mb-3">{t.productDetail.benefits}</h3>
             <div className="flex flex-wrap gap-2">
               {product.features.map((feature, idx) => (
                 <span key={idx} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">
@@ -240,7 +330,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
 
         {/* Reviews Summary */}
         <div className="px-4 pt-8 mb-8">
-          <h3 className="text-lg font-bold text-white mb-4">Reseñas</h3>
+          <h3 className="text-lg font-bold text-white mb-4">{t.productDetail.reviews}</h3>
           <div className="flex flex-wrap gap-x-8 gap-y-6 p-4 rounded-xl bg-white/5">
             <div className="flex flex-col gap-2">
               <p className="text-white text-4xl font-black leading-tight">
@@ -248,7 +338,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
               </p>
               <StarRating rating={product.rating} />
               <p className="text-white/60 text-sm">
-                {product.reviews_count} reseñas
+                {product.reviews_count} {t.productDetail.reviews}
               </p>
             </div>
             <div className="grid min-w-[200px] max-w-[400px] flex-1 grid-cols-[20px_1fr_40px] items-center gap-y-3">
@@ -282,7 +372,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
             id: product.id,
             title: product.title,
             price: Number(product.price),
-            priceLabel: getPriceLabel(product),
+            priceLabel: getPriceLabelTranslated(),
             image: getProductImage(product),
             category: getCategorySlug(product, category),
             slug: `${getCategorySlug(product, category)}/${product.slug}`,

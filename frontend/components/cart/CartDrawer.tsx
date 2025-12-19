@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { useCart } from '@/contexts/CartContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 export function CartDrawer() {
   const { items, removeItem, updateQuantity, totalItems, totalPrice, isOpen, setIsOpen } = useCart();
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -22,7 +24,7 @@ export function CartDrawer() {
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
             <span className="material-symbols-outlined">shopping_cart</span>
-            Cart ({totalItems})
+            {t.cart.title} ({totalItems})
           </h2>
           <button 
             onClick={() => setIsOpen(false)}
@@ -39,12 +41,12 @@ export function CartDrawer() {
               <span className="material-symbols-outlined text-5xl text-white/30 mb-4 block">
                 shopping_cart
               </span>
-              <p className="text-white/60 mb-4">Your cart is empty</p>
+              <p className="text-white/60 mb-4">{t.cart.empty.title}</p>
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-primary hover:underline"
               >
-                Continue shopping
+                {t.cart.continueShopping}
               </button>
             </div>
           ) : (
@@ -91,7 +93,7 @@ export function CartDrawer() {
                           onClick={() => {
                             const success = updateQuantity(item.id, item.quantity + 1);
                             if (!success) {
-                              alert(`Only ${item.stock} items available`);
+                              alert(`${t.cart.onlyAvailable} ${item.stock}`);
                             }
                           }}
                           disabled={!item.isUnlimitedStock && item.stock !== undefined && item.quantity >= item.stock}
@@ -110,7 +112,7 @@ export function CartDrawer() {
                     {/* Stock indicator */}
                     {!item.isUnlimitedStock && item.stock !== undefined && (
                       <p className={`text-xs mt-1 ${item.quantity >= item.stock ? 'text-orange-400' : 'text-white/40'}`}>
-                        {item.quantity >= item.stock ? 'Max quantity reached' : `${item.stock - item.quantity} more available`}
+                        {item.quantity >= item.stock ? t.cart.maxQuantity : `${item.stock - item.quantity} ${t.cart.moreAvailable}`}
                       </p>
                     )}
                   </div>
@@ -124,7 +126,7 @@ export function CartDrawer() {
         {items.length > 0 && (
           <div className="border-t border-white/10 p-4 space-y-4">
             <div className="flex justify-between text-lg">
-              <span className="text-white/70">Subtotal</span>
+              <span className="text-white/70">{t.cart.subtotal}</span>
               <span className="font-bold text-white">${totalPrice}</span>
             </div>
             
@@ -135,13 +137,13 @@ export function CartDrawer() {
                 className="w-full flex items-center justify-center gap-2 bg-primary text-background-dark font-bold py-3 rounded-full hover:bg-primary/90 transition-all"
               >
                 <span className="material-symbols-outlined">lock</span>
-                Checkout
+                {t.cart.checkout}
               </Link>
               <button
                 onClick={() => setIsOpen(false)}
                 className="w-full text-center text-white/60 hover:text-white py-2 text-sm"
               >
-                Continue Shopping
+                {t.cart.continueShopping}
               </button>
             </div>
           </div>

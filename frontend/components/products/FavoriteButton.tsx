@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 const FAVORITES_KEY = 'nature_favorites';
 const ACCESS_TOKEN_KEY = 'nature_access_token';
@@ -43,6 +44,7 @@ interface FavoriteButtonProps {
 }
 
 export function FavoriteButton({ productId, className = '' }: FavoriteButtonProps) {
+  const { t } = useTranslation();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -126,7 +128,7 @@ export function FavoriteButton({ productId, className = '' }: FavoriteButtonProp
       className={`flex items-center justify-center size-8 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors ${className} ${isLoading ? 'opacity-50' : ''}`}
       onClick={handleToggle}
       disabled={isLoading}
-      aria-label={isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
+      aria-label={isFavorite ? t.favorites.removeFromFavorites : t.favorites.addToFavorites}
     >
       <span 
         className="material-symbols-outlined text-lg transition-all"

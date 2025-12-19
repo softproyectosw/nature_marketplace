@@ -6,7 +6,9 @@ import { FallingLeaves } from '@/components/effects/FallingLeaves';
 import { CartButton } from '@/components/cart';
 import { UserMenu } from '@/components/auth';
 import { getProducts, Product } from '@/lib/api/products';
-import { BottomNav } from '@/components/ui';
+import { BottomNav, LanguageSelector } from '@/components/ui';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 // Helper to get product image
 function getProductImage(product: Product): string {
@@ -23,6 +25,8 @@ function getCategorySlug(product: Product): string {
 }
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
   const [scrollProgress, setScrollProgress] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -94,6 +98,7 @@ export default function LandingPage() {
               <span className="font-bold text-white">Nature</span>
             </Link>
             <div className="flex items-center gap-3">
+              <LanguageSelector />
               <CartButton />
               <UserMenu />
             </div>
@@ -104,10 +109,10 @@ export default function LandingPage() {
         <div className="relative z-10 flex flex-col flex-grow justify-end px-4 pb-8 pt-[50vh]">
           <div className="text-center max-w-md mx-auto">
             <h1 className="text-white tracking-tight text-4xl md:text-5xl font-bold leading-tight mb-3">
-              Reconnect with Nature
+              {t.landing.hero.title}
             </h1>
             <p className="text-white/80 text-base md:text-lg font-normal leading-normal">
-              Discover retreats, adopt a tree, and find natural remedies to bring nature closer to you.
+              {t.landing.hero.subtitle}
             </p>
           </div>
           
@@ -117,24 +122,26 @@ export default function LandingPage() {
               href="/products"
               className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 w-full bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all active:scale-95"
             >
-              <span className="truncate">Explore the Marketplace</span>
+              <span className="truncate">{t.landing.cta.exploreMarketplace}</span>
             </Link>
             
-            <div className="flex gap-3">
-              <Link
-                href="/login"
-                className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-transparent text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
-              >
-                <span className="truncate">Sign In</span>
-              </Link>
-              
-              <Link
-                href="/register"
-                className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-white/10 border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-all"
-              >
-                <span className="truncate">Sign Up</span>
-              </Link>
-            </div>
+            {!isAuthenticated && (
+              <div className="flex gap-3">
+                <Link
+                  href="/login"
+                  className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-transparent text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
+                >
+                  <span className="truncate">{t.common.login}</span>
+                </Link>
+                
+                <Link
+                  href="/register"
+                  className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-white/10 border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-all"
+                >
+                  <span className="truncate">{t.common.register}</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
         
@@ -151,10 +158,10 @@ export default function LandingPage() {
         {/* Growing Lush Tree SVG */}
         <div 
           ref={treeRef}
-          className="relative transition-all duration-150 ease-out"
+          className="relative transition-all duration-100 ease-out"
           style={{
-            transform: `scale(${0.2 + scrollProgress * 1.2})`,
-            opacity: 0.3 + scrollProgress * 0.7,
+            transform: `scale(${0.3 + Math.min(scrollProgress * 2.5, 1) * 0.9})`,
+            opacity: 0.4 + Math.min(scrollProgress * 2.5, 1) * 0.6,
           }}
         >
           <svg 
@@ -195,42 +202,56 @@ export default function LandingPage() {
         {/* Text content */}
         <div className="text-center mt-8 max-w-lg">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Watch Your Impact Grow
+            {t.landing.tree.title}
           </h2>
           <p className="text-white/70 text-lg mb-6">
-            Every tree you adopt absorbs CO₂ and helps restore ecosystems. 
-            Track your tree&apos;s growth in real-time.
+            {t.landing.tree.subtitle}
           </p>
           
           {/* Progress indicator */}
           <div className="flex items-center justify-center gap-6 text-white/60 mb-8">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">
-                {Math.round(scrollProgress * 45)}kg
+                {Math.round(Math.min(scrollProgress * 2.5, 1) * 45)}kg
               </div>
-              <div className="text-sm">CO₂ Absorbed</div>
+              <div className="text-sm">{t.landing.tree.co2Absorbed}</div>
             </div>
             <div className="w-px h-12 bg-white/20" />
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">
-                {(scrollProgress * 4.5).toFixed(1)}m
+                {(Math.min(scrollProgress * 2.5, 1) * 4.5).toFixed(1)}m
               </div>
-              <div className="text-sm">Height</div>
+              <div className="text-sm">{t.landing.tree.height}</div>
             </div>
             <div className="w-px h-12 bg-white/20" />
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">
-                {Math.round(scrollProgress * 24)}
+                {Math.round(Math.min(scrollProgress * 2.5, 1) * 24)}
               </div>
-              <div className="text-sm">Months</div>
+              <div className="text-sm">{t.landing.tree.months}</div>
             </div>
+          </div>
+          
+          {/* Adopt Me Button - appears when tree is fully grown */}
+          <div 
+            className={`transition-all duration-500 ${
+              scrollProgress >= 0.4 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+            }`}
+          >
+            <Link
+              href="/products?category=trees"
+              className="inline-flex items-center gap-2 bg-primary text-background-dark font-bold px-8 py-4 rounded-full hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/30 text-lg"
+            >
+              <span className="material-symbols-outlined">park</span>
+              {t.landing.tree.adoptMe}
+            </Link>
           </div>
         </div>
         
         {/* Product Carousel */}
         {products.length > 0 && (
           <div className="w-full max-w-4xl mx-auto mt-8 px-4">
-            <p className="text-center text-white/50 text-sm mb-6">Productos destacados</p>
+            <p className="text-center text-white/50 text-sm mb-6">{t.landing.featuredProducts}</p>
             <div className="relative">
               {/* Navigation Buttons */}
               <button
@@ -266,7 +287,7 @@ export default function LandingPage() {
                         {product.title}
                       </p>
                       <p className="text-primary text-sm font-bold">
-                        ${product.price}{product.pricing_type === 'annual' ? '/año' : ''}
+                        ${product.price}{product.pricing_type === 'annual' ? t.products.perYear : ''}
                       </p>
                     </Link>
                   ))}
@@ -295,7 +316,7 @@ export default function LandingPage() {
           className="mt-8 btn-primary text-lg px-8 py-4 inline-flex items-center justify-center gap-2"
         >
           <span className="material-symbols-outlined">eco</span>
-          Explorar Todos los Productos
+          {t.landing.cta.exploreAllProducts}
         </Link>
       </section>
       
@@ -303,10 +324,10 @@ export default function LandingPage() {
       <section className="py-20 px-6 bg-[#1A3123]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-white mb-4">
-            What You Can Do
+            {t.landing.features.title}
           </h2>
           <p className="text-center text-white/60 mb-12 max-w-2xl mx-auto">
-            From adopting trees to booking wellness retreats, make a positive impact on the planet.
+            {t.landing.features.subtitle}
           </p>
           
           <div className="grid md:grid-cols-3 gap-6">
@@ -315,9 +336,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">park</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Tree Adoptions</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.landing.features.trees.title}</h3>
               <p className="text-white/60">
-                Adopt a tree and receive updates as it grows. Visit it anytime.
+                {t.landing.features.trees.description}
               </p>
             </div>
             
@@ -326,9 +347,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">spa</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Wellness Retreats</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.landing.features.retreats.title}</h3>
               <p className="text-white/60">
-                Book immersive experiences in nature. Forest bathing, yoga, and more.
+                {t.landing.features.retreats.description}
               </p>
             </div>
             
@@ -337,9 +358,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">eco</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Natural Products</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.landing.features.products.title}</h3>
               <p className="text-white/60">
-                Discover sustainable, eco-friendly products that make a difference.
+                {t.landing.features.products.description}
               </p>
             </div>
           </div>
@@ -350,25 +371,25 @@ export default function LandingPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-12">
-            Our Collective Impact
+            {t.landing.impact.title}
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <div className="text-4xl font-bold text-primary mb-2">10K+</div>
-              <div className="text-white/60">Trees Adopted</div>
+              <div className="text-white/60">{t.landing.impact.treesAdopted}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-primary mb-2">500+</div>
-              <div className="text-white/60">Tons CO₂ Offset</div>
+              <div className="text-white/60">{t.landing.impact.co2Offset}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-primary mb-2">2K+</div>
-              <div className="text-white/60">Active Sponsors</div>
+              <div className="text-white/60">{t.landing.impact.activeSponsors}</div>
             </div>
             <div>
               <div className="text-4xl font-bold text-primary mb-2">50+</div>
-              <div className="text-white/60">Retreat Locations</div>
+              <div className="text-white/60">{t.landing.impact.retreatLocations}</div>
             </div>
           </div>
         </div>
@@ -378,10 +399,10 @@ export default function LandingPage() {
       <section className="py-20 px-6 bg-gradient-to-t from-[#1A3123] to-background-dark">
         <div className="max-w-md mx-auto text-center">
           <h2 className="text-3xl font-bold text-white mb-4">
-            Ready to Start?
+            {t.landing.finalCta.title}
           </h2>
           <p className="text-white/60 mb-8">
-            Join thousands making a positive impact on the planet.
+            {t.landing.finalCta.subtitle}
           </p>
           
           <div className="flex flex-col gap-3">
@@ -389,13 +410,13 @@ export default function LandingPage() {
               href="/register"
               className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 w-full bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all active:scale-95"
             >
-              Create Free Account
+              {t.landing.cta.createAccount}
             </Link>
             <Link
               href="/products"
               className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 w-full bg-transparent border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
             >
-              Browse Products
+              {t.landing.cta.viewProducts}
             </Link>
           </div>
         </div>
@@ -409,7 +430,7 @@ export default function LandingPage() {
             <span className="font-semibold text-white">Nature Marketplace</span>
           </div>
           <p className="text-white/40 text-sm">
-            © 2024 Nature Marketplace. All rights reserved.
+            © 2024 Nature Marketplace. {t.footer.rights}.
           </p>
         </div>
       </footer>
