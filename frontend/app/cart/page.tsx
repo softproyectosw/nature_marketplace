@@ -24,7 +24,7 @@ const initialCartItems: CartItem[] = [
     priceLabel: '/año',
     quantity: 1,
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA57d8-crjcjBcF7YSMwpjlCwOgxjuIMr_-ft7LPHaYWNRZFBtgEyVb6ik914ymF0nlxS0sy3CpfzfuzEg6n1aIgHgZ73mAfGBEHFE5i6ILJCiFjSG582VjSgeNDxH2kRfEKNmuhxFJDH9pQ4jzrpUX3QdM6tdqCNMk-prHTFJ3M52-0YSf8X78H3lFF1fPMb2GeFHr-gQpLKK9qDfefwoYzzcKoXYY0qSipZsvnaY8HN_il1xJdV5q7wirCuBPxSOFwN0EIh4aPV4w',
-    category: 'trees',
+    category: 'bosque-vivo',
   },
 ];
 
@@ -83,7 +83,7 @@ export default function CartPage() {
             </p>
             <Link
               href="/products"
-              className="inline-flex items-center gap-2 bg-primary text-background-dark font-bold px-6 py-3 rounded-full hover:bg-primary/90 transition-all"
+              className="inline-flex items-center gap-2 bg-primary text-background-dark font-bold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all"
             >
               <span className="material-symbols-outlined">explore</span>
               {t.cart.empty.cta}
@@ -173,7 +173,7 @@ export default function CartPage() {
             <div className="mt-8">
               <Link
                 href="/checkout"
-                className="w-full flex items-center justify-center gap-2 bg-primary text-background-dark font-bold py-4 rounded-full hover:bg-primary/90 transition-all"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-background-dark font-bold py-4 rounded-xl hover:bg-primary/90 transition-all"
               >
                 <span className="material-symbols-outlined">lock</span>
                 {t.cart.checkout}

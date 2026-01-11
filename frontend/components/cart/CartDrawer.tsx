@@ -134,7 +134,7 @@ export function CartDrawer() {
               <Link
                 href="/checkout"
                 onClick={() => setIsOpen(false)}
-                className="w-full flex items-center justify-center gap-2 bg-primary text-background-dark font-bold py-3 rounded-full hover:bg-primary/90 transition-all"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-background-dark font-bold py-3 rounded-xl hover:bg-primary/90 transition-all"
               >
                 <span className="material-symbols-outlined">lock</span>
                 {t.cart.checkout}

@@ -120,7 +120,7 @@ export default function LandingPage() {
           <div className="flex flex-col gap-3 pt-10 max-w-md mx-auto w-full">
             <Link
               href="/products"
-              className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 w-full bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all active:scale-95"
+              className="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 w-full bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all active:scale-95"
             >
               <span className="truncate">{t.landing.cta.exploreMarketplace}</span>
             </Link>
@@ -129,14 +129,14 @@ export default function LandingPage() {
               <div className="flex gap-3">
                 <Link
                   href="/login"
-                  className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-transparent text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
+                  className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 bg-transparent text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
                 >
                   <span className="truncate">{t.common.login}</span>
                 </Link>
                 
                 <Link
                   href="/register"
-                  className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 bg-white/10 border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-all"
+                  className="flex-1 flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 bg-white/10 border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-all"
                 >
                   <span className="truncate">{t.common.register}</span>
                 </Link>
@@ -239,8 +239,8 @@ export default function LandingPage() {
             }`}
           >
             <Link
-              href="/products?category=trees"
-              className="inline-flex items-center gap-2 bg-primary text-background-dark font-bold px-8 py-4 rounded-full hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/30 text-lg"
+              href="/products?category=bosque-vivo"
+              className="inline-flex items-center gap-2 bg-primary text-background-dark font-bold px-8 py-4 rounded-xl hover:bg-primary/90 transition-all hover:scale-105 shadow-lg shadow-primary/30 text-lg"
             >
               <span className="material-symbols-outlined">park</span>
               {t.landing.tree.adoptMe}
@@ -256,13 +256,13 @@ export default function LandingPage() {
               {/* Navigation Buttons */}
               <button
                 onClick={prevSlide}
-                className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
               >
                 <span className="material-symbols-outlined">chevron_left</span>
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+                className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/20 transition-colors"
               >
                 <span className="material-symbols-outlined">chevron_right</span>
               </button>
@@ -330,39 +330,50 @@ export default function LandingPage() {
             {t.landing.features.subtitle}
           </p>
           
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <div className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all">
-              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-primary text-3xl">park</span>
+          <div className="grid md:grid-cols-4 gap-6">
+            <Link
+              href="/products?category=bosque-vivo"
+              className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all"
+            >
+              <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-primary text-3xl">forest</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{t.landing.features.trees.title}</h3>
-              <p className="text-white/60">
-                {t.landing.features.trees.description}
-              </p>
-            </div>
-            
-            {/* Feature 2 */}
-            <div className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all">
-              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-primary text-3xl">spa</span>
+              <h3 className="text-xl font-semibold text-white mb-2">Bosque Vivo</h3>
+              <p className="text-white/60">(Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real)</p>
+            </Link>
+
+            <Link
+              href="/products?category=guardianes-del-agua"
+              className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all"
+            >
+              <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-primary text-3xl">water</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{t.landing.features.retreats.title}</h3>
-              <p className="text-white/60">
-                {t.landing.features.retreats.description}
-              </p>
-            </div>
-            
-            {/* Feature 3 */}
-            <div className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all">
-              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="material-symbols-outlined text-primary text-3xl">eco</span>
+              <h3 className="text-xl font-semibold text-white mb-2">Guardianes del Agua</h3>
+              <p className="text-white/60">(Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo)</p>
+            </Link>
+
+            <Link
+              href="/products?category=economia-del-corazon"
+              className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all"
+            >
+              <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-primary text-3xl">volunteer_activism</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">{t.landing.features.products.title}</h3>
-              <p className="text-white/60">
-                {t.landing.features.products.description}
-              </p>
-            </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Economía del Corazón</h3>
+              <p className="text-white/60">(Apoya proyectos regenerativos y de educación ambiental)</p>
+            </Link>
+
+            <Link
+              href="/products?category=micro-retreats"
+              className="bg-background-dark/50 rounded-2xl p-6 text-center border border-white/10 hover:border-primary/30 transition-all"
+            >
+              <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <span className="material-symbols-outlined text-primary text-3xl">hiking</span>
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">Micro-retreats</h3>
+              <p className="text-white/60">(Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar.)</p>
+            </Link>
           </div>
         </div>
       </section>
@@ -408,13 +419,13 @@ export default function LandingPage() {
           <div className="flex flex-col gap-3">
             <Link
               href="/register"
-              className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 w-full bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all active:scale-95"
+              className="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 w-full bg-primary text-background-dark text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-all active:scale-95"
             >
               {t.landing.cta.createAccount}
             </Link>
             <Link
               href="/products"
-              className="flex cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 w-full bg-transparent border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
+              className="flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-14 px-5 w-full bg-transparent border border-white/20 text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-white/10 transition-all"
             >
               {t.landing.cta.viewProducts}
             </Link>

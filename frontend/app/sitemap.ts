@@ -44,25 +44,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Mock product URLs for now
   const productUrls: MetadataRoute.Sitemap = [
     {
-      url: `${BASE_URL}/products/trees/andean-oak-tree`,
+      url: `${BASE_URL}/products/bosque-vivo/andean-oak-tree`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/products/trees/ceiba-tree`,
+      url: `${BASE_URL}/products/bosque-vivo/ceiba-tree`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/products/retreats/mountain-wellness-retreat`,
+      url: `${BASE_URL}/products/micro-retreats/andes-retreat`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.7,
     },
     {
-      url: `${BASE_URL}/products/retreats/forest-bathing-experience`,
+      url: `${BASE_URL}/products/guardianes-del-agua/forest-bathing-experience`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,

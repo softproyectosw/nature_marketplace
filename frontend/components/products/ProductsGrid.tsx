@@ -11,10 +11,10 @@ import { useTranslation } from '@/contexts/LanguageContext';
 // Default categories (fallback if API fails)
 const defaultCategories = [
   { name: 'Todos', slug: '', icon: 'apps' },
-  { name: 'Árboles', slug: 'trees', icon: 'park' },
-  { name: 'Bosques', slug: 'forests', icon: 'forest' },
-  { name: 'Lagunas', slug: 'lagoons', icon: 'water' },
-  { name: 'Experiencias', slug: 'experiences', icon: 'hiking' },
+  { name: 'Bosque Vivo', slug: 'bosque-vivo', icon: 'forest' },
+  { name: 'Guardianes del Agua', slug: 'guardianes-del-agua', icon: 'water' },
+  { name: 'Economía del Corazón', slug: 'economia-del-corazon', icon: 'volunteer_activism' },
+  { name: 'Micro-retreats', slug: 'micro-retreats', icon: 'hiking' },
 ];
 
 // Helper to get category slug
@@ -44,10 +44,10 @@ function getPriceLabel(product: Product, perYear: string): string {
 // Category translation map (slug -> translation key)
 const categoryTranslationKeys: Record<string, string> = {
   '': 'all',
-  'trees': 'trees',
-  'forests': 'forests',
-  'lagoons': 'lagoons',
-  'experiences': 'experiences',
+  'bosque-vivo': 'bosqueVivo',
+  'guardianes-del-agua': 'guardianesDelAgua',
+  'economia-del-corazon': 'economiaDelCorazon',
+  'micro-retreats': 'microRetreats',
   'retreats': 'retreats',
   'remedies': 'remedies',
 };
@@ -134,7 +134,7 @@ export function ProductsGrid() {
               <button
                 key={cat.slug}
                 onClick={() => setActiveCategory(cat.slug)}
-                className={`whitespace-nowrap flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`whitespace-nowrap flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   activeCategory === cat.slug
                     ? 'bg-primary text-background-dark'
                     : 'bg-white/10 text-white hover:bg-white/20'
@@ -172,7 +172,7 @@ export function ProductsGrid() {
               <p className="text-white/60">{error}</p>
               <button
                 onClick={() => window.location.reload()}
-                className="mt-4 px-4 py-2 bg-primary text-background-dark rounded-full text-sm font-medium"
+                className="mt-4 px-4 py-2 bg-primary text-background-dark rounded-xl text-sm font-medium"
               >
                 {t.products.retry}
               </button>

@@ -45,14 +45,14 @@ export default function WelcomePage() {
         <div className="flex flex-col gap-4 pt-10 w-full max-w-md mx-auto">
           <Link
             href="/products"
-            className="flex w-full cursor-pointer items-center justify-center rounded-full h-14 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-wide hover:bg-primary/90 transition-colors"
+            className="flex w-full cursor-pointer items-center justify-center rounded-xl h-14 px-5 bg-primary text-background-dark text-base font-bold leading-normal tracking-wide hover:bg-primary/90 transition-colors"
           >
             Explore the Marketplace
           </Link>
 
           <Link
             href="/login"
-            className="flex w-full cursor-pointer items-center justify-center rounded-full h-14 px-5 bg-white/10 backdrop-blur-md text-white border border-white/20 text-base font-bold leading-normal tracking-wide hover:bg-white/20 transition-colors"
+            className="flex w-full cursor-pointer items-center justify-center rounded-xl h-14 px-5 bg-white/10 backdrop-blur-md text-white border border-white/20 text-base font-bold leading-normal tracking-wide hover:bg-white/20 transition-colors"
           >
             Sign In
           </Link>

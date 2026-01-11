@@ -67,10 +67,10 @@ function StarRating({ rating }: { rating: number | string }) {
 
 // Category translation map
 const categoryTranslationKeys: Record<string, string> = {
-  'trees': 'trees',
-  'forests': 'forests',
-  'lagoons': 'lagoons',
-  'experiences': 'experiences',
+  'bosque-vivo': 'bosqueVivo',
+  'guardianes-del-agua': 'guardianesDelAgua',
+  'economia-del-corazon': 'economiaDelCorazon',
+  'micro-retreats': 'microRetreats',
   'retreats': 'retreats',
   'remedies': 'remedies',
 };
@@ -136,7 +136,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
       <div className="sticky top-0 z-20 flex items-center bg-background-dark/95 p-4 pb-2 justify-between backdrop-blur-md">
         <Link
           href="/products"
-          className="flex size-10 shrink-0 items-center justify-center rounded-full text-white hover:bg-white/10 transition-colors"
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl text-white hover:bg-white/10 transition-colors"
         >
           <span className="material-symbols-outlined text-2xl">arrow_back</span>
         </Link>
@@ -168,7 +168,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
                     setIsAutoPlaying(false);
                     setActiveImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
                   }}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
                 >
                   <span className="material-symbols-outlined">chevron_left</span>
                 </button>
@@ -177,7 +177,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
                     setIsAutoPlaying(false);
                     setActiveImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
                   }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-black/50 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/70 transition-colors"
                 >
                   <span className="material-symbols-outlined">chevron_right</span>
                 </button>
@@ -257,7 +257,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
           
           {/* Stock Status */}
           {!product.is_unlimited_stock && product.stock !== undefined && (
-            <div className={`mt-3 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${
+            <div className={`mt-3 inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-medium ${
               product.stock === 0 
                 ? 'bg-red-500/20 text-red-400' 
                 : product.stock < 5 
@@ -279,7 +279,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
             <div className="grid grid-cols-2 gap-3">
               {highlights.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-white/5">
-                  <div className="flex items-center justify-center size-10 rounded-full bg-primary/20 text-primary">
+                  <div className="flex items-center justify-center size-10 rounded-lg bg-primary/20 text-primary">
                     <span className="material-symbols-outlined">{item.icon}</span>
                   </div>
                   <span className="text-sm font-medium text-white/80">
@@ -320,7 +320,7 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
             <h3 className="text-lg font-bold text-white mb-3">{t.productDetail.benefits}</h3>
             <div className="flex flex-wrap gap-2">
               {product.features.map((feature, idx) => (
-                <span key={idx} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">
+                <span key={idx} className="px-3 py-1 rounded-lg bg-primary/10 text-primary text-sm">
                   {feature}
                 </span>
               ))}
@@ -351,9 +351,9 @@ export function ProductDetailClient({ product, category }: ProductDetailClientPr
               ].map((rate) => (
                 <div key={rate.l} className="contents">
                   <p className="text-white text-sm">{rate.l}</p>
-                  <div className="flex h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                  <div className="flex h-2 flex-1 overflow-hidden rounded bg-white/10">
                     <div
-                      className="rounded-full bg-primary"
+                      className="rounded bg-primary"
                       style={{ width: `${rate.p}%` }}
                     />
                   </div>

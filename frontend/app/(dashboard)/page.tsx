@@ -30,10 +30,10 @@ function getProductImage(product: Product): string {
 // Category translation map
 const categoryTranslationKeys: Record<string, string> = {
   '': 'all',
-  'trees': 'trees',
-  'forests': 'forests',
-  'lagoons': 'lagoons',
-  'experiences': 'experiences',
+  'bosque-vivo': 'bosqueVivo',
+  'guardianes-del-agua': 'guardianesDelAgua',
+  'economia-del-corazon': 'economiaDelCorazon',
+  'micro-retreats': 'microRetreats',
   'retreats': 'retreats',
   'remedies': 'remedies',
 };
@@ -112,7 +112,7 @@ export default function DashboardPage() {
           <div className="flex size-12 shrink-0 items-center">
             <Link
               href="/profile"
-              className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 cursor-pointer hover:opacity-90 transition-opacity bg-primary/20 flex items-center justify-center"
+              className="bg-center bg-no-repeat aspect-square bg-cover rounded-xl size-10 cursor-pointer hover:opacity-90 transition-opacity bg-primary/20 flex items-center justify-center"
               style={user?.avatar ? {
                 backgroundImage: `url("${user.avatar}")`,
               } : undefined}
@@ -125,7 +125,7 @@ export default function DashboardPage() {
           <div className="flex w-12 items-center justify-end">
             <Link 
               href="/settings"
-              className="flex cursor-pointer items-center justify-center rounded-full h-12 bg-transparent text-white gap-2 text-base font-bold min-w-0 p-0"
+              className="flex cursor-pointer items-center justify-center rounded-xl h-12 bg-transparent text-white gap-2 text-base font-bold min-w-0 p-0"
             >
               <span className="material-symbols-outlined text-3xl">settings</span>
             </Link>

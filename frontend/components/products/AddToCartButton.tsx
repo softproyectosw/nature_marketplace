@@ -73,7 +73,7 @@ export function AddToCartButton({ productId, productTitle, price }: AddToCartBut
         <button
           onClick={handleAddToCart}
           disabled={isAdding || added}
-          className={`flex-grow h-14 rounded-full text-base font-bold flex items-center justify-center gap-2 transition-all ${
+          className={`flex-grow h-14 rounded-xl text-base font-bold flex items-center justify-center gap-2 transition-all ${
             added 
               ? 'bg-green-500 text-white' 
               : 'bg-primary text-black hover:bg-primary/90'

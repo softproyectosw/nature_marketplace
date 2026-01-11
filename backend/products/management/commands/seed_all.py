@@ -169,10 +169,10 @@ class Command(BaseCommand):
         self.stdout.write('\n📁 Creating categories...')
         
         categories_data = [
-            {'name': 'Árboles', 'slug': 'trees', 'icon': 'park', 'description': 'Apadrina un árbol y contribuye a la reforestación', 'display_order': 1},
-            {'name': 'Bosques', 'slug': 'forests', 'icon': 'forest', 'description': 'Protege hectáreas de bosque nativo', 'display_order': 2},
-            {'name': 'Lagunas', 'slug': 'lagoons', 'icon': 'water', 'description': 'Conserva ecosistemas acuáticos', 'display_order': 3},
-            {'name': 'Experiencias', 'slug': 'experiences', 'icon': 'hiking', 'description': 'Vive experiencias únicas en la naturaleza', 'display_order': 4},
+            {'name': 'Bosque Vivo', 'slug': 'bosque-vivo', 'icon': 'forest', 'description': 'Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real', 'display_order': 1},
+            {'name': 'Guardianes del Agua', 'slug': 'guardianes-del-agua', 'icon': 'water', 'description': 'Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo', 'display_order': 2},
+            {'name': 'Economía del Corazón', 'slug': 'economia-del-corazon', 'icon': 'volunteer_activism', 'description': 'Apoya proyectos regenerativos y de educación ambiental', 'display_order': 3},
+            {'name': 'Micro-retreats', 'slug': 'micro-retreats', 'icon': 'hiking', 'description': 'Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar', 'display_order': 4},
         ]
         
         categories = {}
@@ -184,6 +184,9 @@ class Command(BaseCommand):
             categories[cat_data['slug']] = cat
             status = 'Created' if created else 'Exists'
             self.stdout.write(f'  {cat.name} - {status}')
+
+        legacy_slugs = ['trees', 'forests', 'lagoons', 'experiences']
+        Category.objects.filter(slug__in=legacy_slugs).update(is_active=False)
         
         return categories
 
@@ -199,7 +202,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Roble Andino',
                     'slug': 'roble-andino',
-                    'category': categories['trees'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'tree',
                     'price': Decimal('49.00'),
                     'pricing_type': 'annual',
@@ -224,7 +227,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Ceiba Sagrada',
                     'slug': 'ceiba-sagrada',
-                    'category': categories['trees'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'tree',
                     'price': Decimal('79.00'),
                     'pricing_type': 'annual',
@@ -250,7 +253,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Palma de Cera',
                     'slug': 'palma-de-cera',
-                    'category': categories['trees'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'tree',
                     'price': Decimal('99.00'),
                     'pricing_type': 'annual',
@@ -275,7 +278,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Hectárea de Bosque Andino',
                     'slug': 'hectarea-bosque-andino',
-                    'category': categories['forests'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'forest',
                     'price': Decimal('299.00'),
                     'pricing_type': 'annual',
@@ -298,7 +301,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': '1/4 Hectárea Bosque Nublado',
                     'slug': 'cuarto-hectarea-bosque-nublado',
-                    'category': categories['forests'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'forest',
                     'price': Decimal('99.00'),
                     'pricing_type': 'annual',
@@ -320,7 +323,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Laguna de Guatavita',
                     'slug': 'laguna-guatavita',
-                    'category': categories['lagoons'],
+                    'category': categories['guardianes-del-agua'],
                     'product_type': 'lagoon',
                     'price': Decimal('149.00'),
                     'pricing_type': 'annual',
@@ -339,7 +342,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Humedal La Conejera',
                     'slug': 'humedal-conejera',
-                    'category': categories['lagoons'],
+                    'category': categories['guardianes-del-agua'],
                     'product_type': 'lagoon',
                     'price': Decimal('89.00'),
                     'pricing_type': 'annual',
@@ -360,7 +363,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Retiro de Bienestar Andino',
                     'slug': 'retiro-bienestar-andino',
-                    'category': categories['experiences'],
+                    'category': categories['micro-retreats'],
                     'product_type': 'experience',
                     'price': Decimal('599.00'),
                     'pricing_type': 'one_time',
@@ -383,7 +386,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Caminata Bosque de Niebla',
                     'slug': 'caminata-bosque-niebla',
-                    'category': categories['experiences'],
+                    'category': categories['micro-retreats'],
                     'product_type': 'experience',
                     'price': Decimal('89.00'),
                     'pricing_type': 'one_time',
@@ -405,7 +408,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Avistamiento de Ballenas',
                     'slug': 'avistamiento-ballenas',
-                    'category': categories['experiences'],
+                    'category': categories['micro-retreats'],
                     'product_type': 'experience',
                     'price': Decimal('299.00'),
                     'pricing_type': 'one_time',
@@ -424,6 +427,38 @@ class Command(BaseCommand):
                 },
                 'image_url': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCb7qaFmCmW_aGhTbq42JWuifGkh94nQpfJmiA9_F7aE8mZuTVw1S2ZtiDI9B-5jU0vLKt5IKaOtya60cBgZj2wKfJ3j4IsKyEeBlu1TPRyskyshIO7j0j_BxGAd7hYkVPPU7FTpDe-STzCv0orJsz-2tY9VRCRpR1lvmaocHMDNtF3VpyzQfbrLD7ATHv2_gmJKdZZR6lIv6ypEojiay4KM3doCIohLK-JXcU-pINVpOCYB--Fz29aHoLH9qeX1Teo5j7JmZcnb07j',
             },
+            {
+                'data': {
+                    'title': 'Economía del Corazón - Educación Ambiental',
+                    'slug': 'economia-del-corazon-educacion-ambiental',
+                    'category': categories['economia-del-corazon'],
+                    'product_type': 'experience',
+                    'price': Decimal('25.00'),
+                    'pricing_type': 'one_time',
+                    'short_description': 'Apoya talleres y materiales de educación ambiental en comunidades locales',
+                    'description': 'Tu aporte financia talleres, guías y actividades educativas enfocadas en conservación, restauración y cuidado del territorio.',
+                    'rating': Decimal('5.0'),
+                    'reviews_count': 0,
+                    'is_unlimited_stock': True,
+                },
+                'image_url': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
+            },
+            {
+                'data': {
+                    'title': 'Economía del Corazón - Proyectos Regenerativos',
+                    'slug': 'economia-del-corazon-proyectos-regenerativos',
+                    'category': categories['economia-del-corazon'],
+                    'product_type': 'experience',
+                    'price': Decimal('50.00'),
+                    'pricing_type': 'one_time',
+                    'short_description': 'Acelera proyectos regenerativos y guardianía comunitaria del territorio',
+                    'description': 'Contribuye al fortalecimiento de iniciativas locales: restauración, viveros, monitoreo y economía comunitaria.',
+                    'rating': Decimal('5.0'),
+                    'reviews_count': 0,
+                    'is_unlimited_stock': True,
+                },
+                'image_url': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e',
+            },
         ]
         
         products = {}
@@ -436,6 +471,11 @@ class Command(BaseCommand):
                 slug=slug,
                 defaults=prod_data
             )
+
+            desired_category = prod_data.get('category')
+            if desired_category and product.category_id != desired_category.id:
+                product.category = desired_category
+                product.save(update_fields=['category'])
             
             if created:
                 ProductImage.objects.create(

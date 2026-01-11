@@ -15,10 +15,10 @@ class Command(BaseCommand):
         
         # Create categories
         categories_data = [
-            {'name': 'Árboles', 'slug': 'trees', 'icon': 'park', 'description': 'Apadrina un árbol y contribuye a la reforestación'},
-            {'name': 'Bosques', 'slug': 'forests', 'icon': 'forest', 'description': 'Protege hectáreas de bosque nativo'},
-            {'name': 'Lagunas', 'slug': 'lagoons', 'icon': 'water', 'description': 'Conserva ecosistemas acuáticos'},
-            {'name': 'Experiencias', 'slug': 'experiences', 'icon': 'hiking', 'description': 'Vive experiencias únicas en la naturaleza'},
+            {'name': 'Bosque Vivo', 'slug': 'bosque-vivo', 'icon': 'forest', 'description': 'Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real'},
+            {'name': 'Guardianes del Agua', 'slug': 'guardianes-del-agua', 'icon': 'water', 'description': 'Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo'},
+            {'name': 'Economía del Corazón', 'slug': 'economia-del-corazon', 'icon': 'volunteer_activism', 'description': 'Apoya proyectos regenerativos y de educación ambiental'},
+            {'name': 'Micro-retreats', 'slug': 'micro-retreats', 'icon': 'hiking', 'description': 'Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar'},
         ]
         
         categories = {}
@@ -30,6 +30,9 @@ class Command(BaseCommand):
             categories[cat_data['slug']] = cat
             status = 'Created' if created else 'Already exists'
             self.stdout.write(f'  Category: {cat.name} - {status}')
+
+        legacy_slugs = ['trees', 'forests', 'lagoons', 'experiences']
+        Category.objects.filter(slug__in=legacy_slugs).update(is_active=False)
         
         # Create products with images
         products_data = [
@@ -38,7 +41,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Roble Andino',
                     'slug': 'roble-andino',
-                    'category': categories['trees'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'tree',
                     'price': 49.00,
                     'pricing_type': 'annual',
@@ -58,7 +61,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Árbol Ceiba Sagrada',
                     'slug': 'ceiba-sagrada',
-                    'category': categories['trees'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'tree',
                     'price': 79.00,
                     'pricing_type': 'annual',
@@ -80,7 +83,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Hectárea de Bosque Andino',
                     'slug': 'hectarea-bosque-andino',
-                    'category': categories['forests'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'forest',
                     'price': 299.00,
                     'pricing_type': 'annual',
@@ -101,7 +104,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': '1/4 Hectárea Bosque Nublado',
                     'slug': 'cuarto-hectarea-bosque-nublado',
-                    'category': categories['forests'],
+                    'category': categories['bosque-vivo'],
                     'product_type': 'forest',
                     'price': 99.00,
                     'pricing_type': 'annual',
@@ -122,7 +125,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Laguna de Guatavita',
                     'slug': 'laguna-guatavita',
-                    'category': categories['lagoons'],
+                    'category': categories['guardianes-del-agua'],
                     'product_type': 'lagoon',
                     'price': 149.00,
                     'pricing_type': 'annual',
@@ -140,7 +143,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Humedal La Conejera',
                     'slug': 'humedal-conejera',
-                    'category': categories['lagoons'],
+                    'category': categories['guardianes-del-agua'],
                     'product_type': 'lagoon',
                     'price': 89.00,
                     'pricing_type': 'annual',
@@ -160,7 +163,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Retiro de Bienestar Andino',
                     'slug': 'retiro-bienestar-andino',
-                    'category': categories['experiences'],
+                    'category': categories['micro-retreats'],
                     'product_type': 'experience',
                     'price': 599.00,
                     'pricing_type': 'one_time',
@@ -182,7 +185,7 @@ class Command(BaseCommand):
                 'data': {
                     'title': 'Caminata Bosque de Niebla',
                     'slug': 'caminata-bosque-niebla',
-                    'category': categories['experiences'],
+                    'category': categories['micro-retreats'],
                     'product_type': 'experience',
                     'price': 89.00,
                     'pricing_type': 'one_time',
@@ -199,6 +202,38 @@ class Command(BaseCommand):
                 },
                 'image_url': 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-6GUNZKUR7_k_ZGZ0RbbevuXmvn9LOA0ukszskzKq8Qu9DAcS9RnbeRMCxxsDilRqpucyAIDDsCW0VhAIoXYPZY2imaFkgPFz2r5wammp0aiUc_pV6nBF4EpzpYMnoTR9par3UGszUC9mdx5Nfeee2UrRzkdNKqzzvz-N_HZNKBu2me2QX3-WBzBTL9irFLpr6fbBD8cPxjRc2mAWYdNquWY53gmbKoXckcMcyXc7M3OrNBHvmm5DBw_tAB74cN4BB1tFvBUSvJG3',
             },
+            {
+                'data': {
+                    'title': 'Economía del Corazón - Educación Ambiental',
+                    'slug': 'economia-del-corazon-educacion-ambiental',
+                    'category': categories['economia-del-corazon'],
+                    'product_type': 'experience',
+                    'price': 25.00,
+                    'pricing_type': 'one_time',
+                    'short_description': 'Apoya talleres y materiales de educación ambiental en comunidades locales',
+                    'description': 'Tu aporte financia talleres, guías y actividades educativas enfocadas en conservación, restauración y cuidado del territorio.',
+                    'rating': 5.0,
+                    'reviews_count': 0,
+                    'is_unlimited_stock': True,
+                },
+                'image_url': 'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
+            },
+            {
+                'data': {
+                    'title': 'Economía del Corazón - Proyectos Regenerativos',
+                    'slug': 'economia-del-corazon-proyectos-regenerativos',
+                    'category': categories['economia-del-corazon'],
+                    'product_type': 'experience',
+                    'price': 50.00,
+                    'pricing_type': 'one_time',
+                    'short_description': 'Acelera proyectos regenerativos y guardianía comunitaria del territorio',
+                    'description': 'Contribuye al fortalecimiento de iniciativas locales: restauración, viveros, monitoreo y economía comunitaria.',
+                    'rating': 5.0,
+                    'reviews_count': 0,
+                    'is_unlimited_stock': True,
+                },
+                'image_url': 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e',
+            },
         ]
         
         for item in products_data:
@@ -209,6 +244,11 @@ class Command(BaseCommand):
                 slug=prod_data['slug'],
                 defaults=prod_data
             )
+
+            desired_category = prod_data.get('category')
+            if desired_category and product.category_id != desired_category.id:
+                product.category = desired_category
+                product.save(update_fields=['category'])
             
             # Create primary image if product was created
             if created:

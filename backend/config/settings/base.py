@@ -198,7 +198,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # MEDIA FILES (User uploads)
 # =============================================================================
 
-MEDIA_URL = 'media/'
+# Public URL path for user-uploaded media.
+# We standardize on /storage/ so Nginx can serve either local files or proxy to MinIO.
+MEDIA_URL = '/storage/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # =============================================================================

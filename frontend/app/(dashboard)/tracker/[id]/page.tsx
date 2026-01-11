@@ -56,7 +56,7 @@ export default function TrackerPage({ params }: TrackerPageProps) {
       <div className="flex items-center p-4 justify-between sticky top-0 z-20 bg-background-dark/80 backdrop-blur-md border-b border-white/5">
         <button
           onClick={() => router.back()}
-          className="text-white flex size-10 shrink-0 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 cursor-pointer"
+          className="text-white flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 cursor-pointer"
         >
           <span className="material-symbols-outlined">arrow_back</span>
         </button>

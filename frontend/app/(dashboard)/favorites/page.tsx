@@ -25,10 +25,10 @@ function getCategorySlug(product: Product): string {
 
 // Category translation map
 const categoryTranslationKeys: Record<string, string> = {
-  'trees': 'trees',
-  'forests': 'forests',
-  'lagoons': 'lagoons',
-  'experiences': 'experiences',
+  'bosque-vivo': 'bosqueVivo',
+  'guardianes-del-agua': 'guardianesDelAgua',
+  'economia-del-corazon': 'economiaDelCorazon',
+  'micro-retreats': 'microRetreats',
   'retreats': 'retreats',
   'remedies': 'remedies',
 };
@@ -110,7 +110,7 @@ export default function FavoritesPage() {
         <div className="max-w-6xl mx-auto flex items-center gap-4">
           <Link
             href="/products"
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
           >
             <span className="material-symbols-outlined text-white">arrow_back</span>
           </Link>
@@ -142,7 +142,7 @@ export default function FavoritesPage() {
           </p>
           <Link
             href="/products"
-            className="px-6 py-3 bg-primary text-background-dark rounded-full font-bold hover:bg-primary/90 transition-colors"
+            className="px-6 py-3 bg-primary text-background-dark rounded-xl font-bold hover:bg-primary/90 transition-colors"
           >
             {t.favorites.empty.cta}
           </Link>

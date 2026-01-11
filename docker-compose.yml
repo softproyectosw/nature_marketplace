@@ -75,7 +75,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
       - DATABASE_URL=postgresql://${DB_USER:-nature_user}:${DB_PASSWORD:-nature_secret}@db:5432/${DB_NAME:-nature_marketplace}
-      - USE_S3=true
+      - USE_S3=${USE_S3:-false}
       - AWS_S3_ENDPOINT_URL=http://minio:9000
       - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER:-minioadmin}
       - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD:-minioadmin123}

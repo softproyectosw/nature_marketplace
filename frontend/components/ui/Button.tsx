@@ -34,7 +34,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const baseStyles = `
       inline-flex items-center justify-center gap-2
-      font-semibold rounded-full
+      font-semibold rounded-xl
       transition-all duration-200
       active:scale-95
       disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100

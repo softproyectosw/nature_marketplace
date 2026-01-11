@@ -79,7 +79,7 @@ export function UserMenu() {
         </Link>
         <Link
           href="/register"
-          className="bg-primary text-background-dark text-sm font-bold px-4 py-2 rounded-full hover:bg-primary/90 transition-all"
+          className="bg-primary text-background-dark text-sm font-bold px-4 py-2 rounded-xl hover:bg-primary/90 transition-all"
         >
           {t.userMenu.signUp}
         </Link>
@@ -100,9 +100,9 @@ export function UserMenu() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 rounded-full hover:bg-white/10 transition-colors"
+        className="flex items-center gap-2 p-1 rounded-xl hover:bg-white/10 transition-colors"
       >
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-background-dark font-bold text-sm">
+        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-background-dark font-bold text-sm">
           {initials}
         </div>
         <span className="text-white text-sm font-medium hidden sm:block max-w-[120px] truncate">

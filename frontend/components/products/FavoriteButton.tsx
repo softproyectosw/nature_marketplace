@@ -125,7 +125,7 @@ export function FavoriteButton({ productId, className = '' }: FavoriteButtonProp
 
   return (
     <button 
-      className={`flex items-center justify-center size-8 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors ${className} ${isLoading ? 'opacity-50' : ''}`}
+      className={`flex items-center justify-center size-8 rounded-lg bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors ${className} ${isLoading ? 'opacity-50' : ''}`}
       onClick={handleToggle}
       disabled={isLoading}
       aria-label={isFavorite ? t.favorites.removeFromFavorites : t.favorites.addToFavorites}

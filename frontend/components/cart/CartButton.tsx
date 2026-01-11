@@ -13,7 +13,7 @@ export function CartButton() {
     >
       <span className="material-symbols-outlined text-2xl">shopping_cart</span>
       {totalItems > 0 && (
-        <span className="absolute -top-1 -right-1 bg-primary text-background-dark text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+        <span className="absolute -top-1 -right-1 bg-primary text-background-dark text-xs font-bold w-5 h-5 rounded-md flex items-center justify-center">
           {totalItems > 9 ? '9+' : totalItems}
         </span>
       )}

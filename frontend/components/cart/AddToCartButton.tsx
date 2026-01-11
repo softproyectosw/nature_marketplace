@@ -63,7 +63,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
       <button
         onClick={handleAdd}
         disabled={buttonDisabled}
-        className={`flex items-center justify-center size-9 rounded-full transition-all active:scale-95 disabled:cursor-not-allowed ${
+        className={`flex items-center justify-center size-9 rounded-xl transition-all active:scale-95 disabled:cursor-not-allowed ${
           isOutOfStock || !canAdd 
             ? 'bg-white/20 text-white/40' 
             : 'bg-primary text-background-dark hover:bg-primary/90 disabled:opacity-70'
@@ -84,7 +84,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
         <button
           onClick={handleAdd}
           disabled={buttonDisabled}
-          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-full font-medium transition-all active:scale-95 disabled:cursor-not-allowed ${
+          className={`flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition-all active:scale-95 disabled:cursor-not-allowed ${
             isOutOfStock || !canAdd 
               ? 'bg-white/20 text-white/60' 
               : 'bg-primary text-background-dark hover:bg-primary/90 disabled:opacity-70'
@@ -115,7 +115,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
       <button
         onClick={handleAdd}
         disabled={buttonDisabled}
-        className={`w-full flex items-center justify-center gap-2 py-3 rounded-full font-bold transition-all active:scale-95 disabled:cursor-not-allowed ${
+        className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all active:scale-95 disabled:cursor-not-allowed ${
           isOutOfStock || !canAdd 
             ? 'bg-white/20 text-white/60' 
             : 'bg-primary text-background-dark hover:bg-primary/90 disabled:opacity-70'

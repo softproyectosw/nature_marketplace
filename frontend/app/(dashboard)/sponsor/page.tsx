@@ -80,13 +80,13 @@ export default function SponsorPage() {
                 </p>
               )}
               <div className="flex items-center gap-3 text-white mt-2">
-                <button className="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-olive-green/80 cursor-pointer">
+                <button className="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-lg bg-olive-green/80 cursor-pointer">
                   -
                 </button>
                 <span className="text-base font-medium leading-normal w-4 text-center">
                   {item.quantity}
                 </span>
-                <button className="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-full bg-olive-green/80 cursor-pointer">
+                <button className="text-base font-medium leading-normal flex h-7 w-7 items-center justify-center rounded-lg bg-olive-green/80 cursor-pointer">
                   +
                 </button>
               </div>
@@ -104,7 +104,7 @@ export default function SponsorPage() {
       {totalCO2 > 0 && (
         <div className="px-4 mt-6">
           <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center gap-4">
-            <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+            <div className="w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center">
               <span className="material-symbols-outlined text-primary text-2xl">forest</span>
             </div>
             <div>
@@ -196,7 +196,7 @@ export default function SponsorPage() {
         <div className="px-4 pb-4 pt-3">
           <Link
             href="/checkout"
-            className="w-full rounded-full bg-primary text-background-dark h-14 text-base font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+            className="w-full rounded-xl bg-primary text-background-dark h-14 text-base font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined">volunteer_activism</span>
             Confirmar Apadrinamiento - ${total.toFixed(2)}/año

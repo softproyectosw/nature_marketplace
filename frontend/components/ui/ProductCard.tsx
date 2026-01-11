@@ -48,12 +48,12 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.is_new && (
-            <span className="px-2 py-1 bg-primary text-background-dark text-xs font-semibold rounded-full">
+            <span className="px-2 py-1 bg-primary text-background-dark text-xs font-semibold rounded-lg">
               New
             </span>
           )}
           {product.is_on_sale && (
-            <span className="px-2 py-1 bg-red-500 text-white text-xs font-semibold rounded-full">
+            <span className="px-2 py-1 bg-red-500 text-white text-xs font-semibold rounded-lg">
               -{product.discount_percentage}%
             </span>
           )}
@@ -62,7 +62,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Quick actions */}
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
-            className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors"
+            className="p-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-colors"
             onClick={(e) => {
               e.preventDefault();
               // TODO: Add to wishlist
