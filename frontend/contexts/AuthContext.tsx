@@ -206,6 +206,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Also clear cookie
     document.cookie = `${ACCESS_TOKEN_KEY}=; path=/; max-age=0`;
     setUser(null);
+    
+    // Force page reload to update auth state in all components
+    window.location.href = '/';
   }
 
   async function refreshUser() {
