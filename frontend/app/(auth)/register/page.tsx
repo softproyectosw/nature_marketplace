@@ -27,12 +27,12 @@ export default function RegisterPage() {
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t.auth.register.errors.passwordsDoNotMatch);
       return;
     }
 
     if (password.length < 8) {
-      setError('Password must be at least 8 characters');
+      setError(t.auth.register.errors.passwordTooShort);
       return;
     }
 
@@ -58,9 +58,9 @@ export default function RegisterPage() {
       if (err && typeof err === 'object' && 'data' in err) {
         const apiError = err as { data: Record<string, string[]> };
         const messages = Object.values(apiError.data).flat();
-        setError(messages.join(' ') || 'Registration failed. Please try again.');
+        setError(messages.join(' ') || t.auth.register.errors.registrationFailed);
       } else {
-        setError('Registration failed. Please try again.');
+        setError(t.auth.register.errors.registrationFailed);
       }
     } finally {
       setIsLoading(false);

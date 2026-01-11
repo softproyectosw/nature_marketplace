@@ -25,13 +25,13 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
     e.stopPropagation();
     
     if (isOutOfStock) {
-      setError('Out of stock');
+      setError(t.products.outOfStock);
       setTimeout(() => setError(null), 2000);
       return;
     }
     
     if (!canAdd) {
-      setError(`Max ${product.stock} items`);
+      setError(`${t.cart.max}: ${product.stock}`);
       setTimeout(() => setError(null), 2000);
       return;
     }
@@ -40,7 +40,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
     const success = addItem(product);
     
     if (!success) {
-      setError('Stock limit reached');
+      setError(t.cart.stockLimitReached);
       setTimeout(() => setError(null), 2000);
     }
     
@@ -53,7 +53,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
   const buttonText = isOutOfStock 
     ? t.products.outOfStock 
     : !canAdd 
-      ? 'Max' 
+      ? t.cart.max 
       : isAdding 
         ? t.products.addedToCart 
         : t.products.addToCart;
@@ -133,7 +133,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
         </span>
         {currentQty > 0 && !isOutOfStock && (
           <span className="bg-background-dark/20 px-2 py-0.5 rounded text-sm">
-            ({currentQty} in cart)
+            ({currentQty} {t.cart.inCart})
           </span>
         )}
       </button>
@@ -144,7 +144,7 @@ export function AddToCartButton({ product, variant = 'icon', className = '' }: A
       )}
       {!product.isUnlimitedStock && product.stock !== undefined && product.stock > 0 && (
         <p className="text-center text-xs text-white/40 mt-2">
-          {product.stock} available
+          {product.stock} {t.products.available}
         </p>
       )}
     </div>

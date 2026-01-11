@@ -1,6 +1,8 @@
 {
   "common": {
     "explore": "Explorar",
+    "new": "Nuevo",
+    "natureLover": "Amante de la Naturaleza",
     "login": "Iniciar Sesión",
     "register": "Registrarse",
     "logout": "Cerrar Sesión",
@@ -83,6 +85,7 @@
     "retreats": "Retiros",
     "remedies": "Remedios",
     "addToCart": "Agregar",
+    "adding": "Agregando...",
     "addedToCart": "¡Agregado!",
     "outOfStock": "Agotado",
     "perYear": "/año",
@@ -103,6 +106,9 @@
   },
   "cart": {
     "title": "Tu Carrito",
+    "max": "Máx",
+    "inCart": "en el carrito",
+    "stockLimitReached": "Límite de stock alcanzado",
     "empty": {
       "title": "Tu carrito está vacío",
       "subtitle": "Comienza a explorar y agrega productos a tu carrito",
@@ -155,7 +161,12 @@
       "confirmPassword": "Confirmar Contraseña",
       "submit": "Crear Cuenta",
       "hasAccount": "¿Ya tienes cuenta?",
-      "signIn": "Inicia Sesión"
+      "signIn": "Inicia Sesión",
+      "errors": {
+        "passwordsDoNotMatch": "Las contraseñas no coinciden",
+        "passwordTooShort": "La contraseña debe tener al menos 8 caracteres",
+        "registrationFailed": "No se pudo registrar. Intenta de nuevo."
+      }
     }
   },
   "footer": {

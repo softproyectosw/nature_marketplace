@@ -1,6 +1,8 @@
 {
   "common": {
     "explore": "Explore",
+    "new": "New",
+    "natureLover": "Nature Lover",
     "login": "Sign In",
     "register": "Sign Up",
     "logout": "Logout",
@@ -83,6 +85,7 @@
     "retreats": "Retreats",
     "remedies": "Remedies",
     "addToCart": "Add",
+    "adding": "Adding...",
     "addedToCart": "Added!",
     "outOfStock": "Out of Stock",
     "perYear": "/year",
@@ -103,6 +106,9 @@
   },
   "cart": {
     "title": "Your Cart",
+    "max": "Max",
+    "inCart": "in cart",
+    "stockLimitReached": "Stock limit reached",
     "empty": {
       "title": "Your cart is empty",
       "subtitle": "Start exploring and add items to your cart",
@@ -155,7 +161,12 @@
       "confirmPassword": "Confirm Password",
       "submit": "Create Account",
       "hasAccount": "Already have an account?",
-      "signIn": "Sign In"
+      "signIn": "Sign In",
+      "errors": {
+        "passwordsDoNotMatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 8 characters",
+        "registrationFailed": "Registration failed. Please try again."
+      }
     }
   },
   "footer": {

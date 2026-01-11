@@ -7,7 +7,7 @@ export const locales = {
 } as const;
 
 export type Locale = keyof typeof locales;
-export type TranslationKeys = typeof es;
+export type TranslationKeys = typeof en;
 
 export const defaultLocale: Locale = 'es';
 

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 interface AddToCartButtonProps {
   productId: number;
@@ -11,6 +12,7 @@ interface AddToCartButtonProps {
 
 export function AddToCartButton({ productId, productTitle, price }: AddToCartButtonProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -82,17 +84,17 @@ export function AddToCartButton({ productId, productTitle, price }: AddToCartBut
           {isAdding ? (
             <>
               <span className="material-symbols-outlined animate-spin">progress_activity</span>
-              Adding...
+              {t.products.adding}
             </>
           ) : added ? (
             <>
               <span className="material-symbols-outlined">check_circle</span>
-              Added to Cart!
+              {t.products.addedToCart}
             </>
           ) : (
             <>
               <span className="material-symbols-outlined">shopping_cart</span>
-              Add to Cart - ${price * quantity}
+              {t.products.addToCart} - ${price * quantity}
             </>
           )}
         </button>

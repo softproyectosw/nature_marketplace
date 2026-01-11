@@ -10,6 +10,8 @@ Creates:
 - Carts
 """
 
+import hashlib
+import random
 from decimal import Decimal
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
@@ -83,6 +85,58 @@ class Command(BaseCommand):
                 self.stdout.write('  Run manually: python manage.py seed_images_to_minio')
         elif not getattr(settings, 'USE_S3', False):
             self.stdout.write(self.style.WARNING('\n⚠ USE_S3 not enabled - images not uploaded to MinIO'))
+
+    def _pick_demo_images(self, slug: str, product_type: str, provided: list[str] | None) -> list[str]:
+        pools: dict[str, list[str]] = {
+            'tree': [
+                'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1200&q=80',
+                'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1200&q=80',
+                'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1200&q=80',
+                'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1200&q=80',
+            ],
+            'forest': [
+                'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=80',
+                'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=1200&q=80',
+                'https://images.unsplash.com/photo-1440342359743-84fcb8c21f21?w=1200&q=80',
+                'https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?w=1200&q=80',
+            ],
+            'lagoon': [
+                'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=1200&q=80',
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80',
+                'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&q=80',
+                'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80',
+            ],
+            'experience': [
+                'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80',
+                'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80',
+                'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=1200&q=80',
+                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+            ],
+        }
+
+        candidates = [u for u in (provided or []) if u]
+        for u in pools.get(product_type, []):
+            if u not in candidates:
+                candidates.append(u)
+
+        if not candidates:
+            candidates = pools.get('forest', [])
+
+        seed = int(hashlib.md5(slug.encode('utf-8')).hexdigest(), 16)
+        rnd = random.Random(seed)
+        rnd.shuffle(candidates)
+
+        picked: list[str] = []
+        for u in candidates:
+            if u and u not in picked:
+                picked.append(u)
+            if len(picked) >= 2:
+                break
+
+        if len(picked) == 1:
+            picked.append(picked[0])
+
+        return picked
 
     def create_users(self):
         self.stdout.write('👤 Creating users...')
@@ -464,7 +518,11 @@ class Command(BaseCommand):
         products = {}
         for item in products_data:
             prod_data = item['data']
-            image_url = item['image_url']
+            image_urls = self._pick_demo_images(
+                slug=prod_data['slug'],
+                product_type=prod_data.get('product_type', ''),
+                provided=item.get('image_urls') or [item.get('image_url')],
+            )
             slug = prod_data['slug']
             
             product, created = Product.objects.get_or_create(
@@ -487,7 +545,15 @@ class Command(BaseCommand):
                 if getattr(settings, 'USE_S3', False):
                     image_url_to_save = ''
                 else:
-                    image_url_to_save = image_url or ''
+                    image_url_to_save = (image_urls[0] or '') if image_urls else ''
+
+                fallback_secondary_url = 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e'
+                if len(image_urls) > 1 and image_urls[1]:
+                    secondary_image_url_to_save = image_urls[1]
+                elif getattr(settings, 'USE_S3', False):
+                    secondary_image_url_to_save = ''
+                else:
+                    secondary_image_url_to_save = fallback_secondary_url
 
                 ProductImage.objects.create(
                     product=product,
@@ -495,6 +561,14 @@ class Command(BaseCommand):
                     alt_text=prod_data['title'],
                     is_primary=True,
                     display_order=0
+                )
+
+                ProductImage.objects.create(
+                    product=product,
+                    image_url=secondary_image_url_to_save,
+                    alt_text=prod_data['title'],
+                    is_primary=False,
+                    display_order=1
                 )
             
             products[slug] = product

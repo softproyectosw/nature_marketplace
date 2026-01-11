@@ -102,7 +102,7 @@ export default function DashboardPage() {
     }
   }, [activeCategory]);
 
-  const userName = user?.first_name || user?.email?.split('@')[0] || 'Nature Lover';
+  const userName = user?.first_name || user?.email?.split('@')[0] || t.common.natureLover;
 
   return (
     <div className="flex flex-col font-display">

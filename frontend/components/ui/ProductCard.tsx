@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn, formatPrice } from '@/lib/utils';
 import type { Product } from '@/lib/api/products';
+import { useTranslation } from '@/contexts/LanguageContext';
 
 /**
  * Product Card component
@@ -18,6 +19,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const { t } = useTranslation();
   const ratingValue = Number(product.rating);
   const ratingText = Number.isFinite(ratingValue) ? ratingValue.toFixed(1) : '0.0';
   const priceValue = Number(product.price);
@@ -54,7 +56,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.is_new && (
             <span className="px-2 py-1 bg-primary text-background-dark text-xs font-semibold rounded-lg">
-              New
+              {t.common.new}
             </span>
           )}
           {product.is_on_sale && (

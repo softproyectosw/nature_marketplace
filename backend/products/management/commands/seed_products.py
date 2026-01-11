@@ -3,12 +3,66 @@ Management command to seed the database with sample products.
 Run with: python manage.py seed_products
 """
 
+import hashlib
+import random
 from django.core.management.base import BaseCommand
 from products.models import Category, Product, ProductImage
 
 
 class Command(BaseCommand):
     help = 'Seed the database with sample products for Nature Marketplace'
+
+    def _pick_demo_images(self, slug: str, product_type: str, provided: list[str] | None) -> list[str]:
+        pools: dict[str, list[str]] = {
+            'tree': [
+                'https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1200&q=80',
+                'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1200&q=80',
+                'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1200&q=80',
+                'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1200&q=80',
+            ],
+            'forest': [
+                'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1200&q=80',
+                'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=1200&q=80',
+                'https://images.unsplash.com/photo-1440342359743-84fcb8c21f21?w=1200&q=80',
+                'https://images.unsplash.com/photo-1425913397330-cf8af2ff40a1?w=1200&q=80',
+            ],
+            'lagoon': [
+                'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=1200&q=80',
+                'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80',
+                'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&q=80',
+                'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&q=80',
+            ],
+            'experience': [
+                'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&q=80',
+                'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80',
+                'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=1200&q=80',
+                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+            ],
+        }
+
+        candidates = [u for u in (provided or []) if u]
+        for u in pools.get(product_type, []):
+            if u not in candidates:
+                candidates.append(u)
+
+        if not candidates:
+            candidates = pools.get('forest', [])
+
+        seed = int(hashlib.md5(slug.encode('utf-8')).hexdigest(), 16)
+        rnd = random.Random(seed)
+        rnd.shuffle(candidates)
+
+        picked: list[str] = []
+        for u in candidates:
+            if u and u not in picked:
+                picked.append(u)
+            if len(picked) >= 2:
+                break
+
+        if len(picked) == 1:
+            picked.append(picked[0])
+
+        return picked
 
     def handle(self, *args, **options):
         self.stdout.write('Seeding database...')
@@ -238,7 +292,11 @@ class Command(BaseCommand):
         
         for item in products_data:
             prod_data = item['data']
-            image_url = item['image_url']
+            image_urls = self._pick_demo_images(
+                slug=prod_data['slug'],
+                product_type=prod_data.get('product_type', ''),
+                provided=item.get('image_urls') or [item.get('image_url')],
+            )
             
             product, created = Product.objects.get_or_create(
                 slug=prod_data['slug'],
@@ -252,12 +310,23 @@ class Command(BaseCommand):
             
             # Create primary image if product was created
             if created:
+                primary_url = (image_urls[0] or '') if image_urls else ''
+                secondary_url = image_urls[1] if len(image_urls) > 1 and image_urls[1] else primary_url
+
                 ProductImage.objects.create(
                     product=product,
-                    image_url=image_url,
+                    image_url=primary_url,
                     alt_text=prod_data['title'],
                     is_primary=True,
                     display_order=0
+                )
+
+                ProductImage.objects.create(
+                    product=product,
+                    image_url=secondary_url,
+                    alt_text=prod_data['title'],
+                    is_primary=False,
+                    display_order=1
                 )
             
             status = 'Created' if created else 'Already exists'
