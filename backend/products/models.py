@@ -408,6 +408,7 @@ class ProductImage(models.Model):
         help_text='Archivo de imagen'
     )
     image_url = models.URLField(
+        max_length=1000,
         blank=True,
         help_text='URL externa de imagen (alternativa a subir archivo)'
     )

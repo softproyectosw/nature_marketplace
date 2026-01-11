@@ -102,6 +102,12 @@ python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
+## 6.1) Create Django DB cache table (fix 500: django_cache_table missing)
+
+```bash
+docker compose -f docker-compose.prod.yml exec backend python manage.py createcachetable
+```
+
 Status:
 
 ```bash

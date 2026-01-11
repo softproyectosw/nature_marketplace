@@ -487,7 +487,7 @@ class Command(BaseCommand):
                 if getattr(settings, 'USE_S3', False):
                     image_url_to_save = ''
                 else:
-                    image_url_to_save = (image_url or '')[:200]
+                    image_url_to_save = image_url or ''
 
                 ProductImage.objects.create(
                     product=product,
