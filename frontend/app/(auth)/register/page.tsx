@@ -51,7 +51,9 @@ export default function RegisterPage() {
         first_name: firstName,
         last_name: lastName,
       });
-      router.push('/');
+      
+      // Force page reload to update auth state in all components
+      window.location.href = '/';
     } catch (err: unknown) {
       console.error('Registration error:', err);
       // Extract error message from API response

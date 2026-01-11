@@ -34,7 +34,9 @@ export default function LoginPage() {
       const result = await auth.login({ email, password });
       console.log('>>> Login result:', result);
       console.log('>>> Token saved:', localStorage.getItem('nature_access_token')?.substring(0, 20) + '...');
-      router.push('/');
+      
+      // Force page reload to update auth state in all components
+      window.location.href = '/';
     } catch (err) {
       console.error('>>> Login error:', err);
       setError('Invalid email or password. Please try again.');
