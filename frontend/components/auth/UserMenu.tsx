@@ -2,40 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { auth } from '@/lib/auth';
+import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from '@/contexts/LanguageContext';
 
-interface User {
-  email: string;
-  first_name?: string;
-  last_name?: string;
-}
-
 export function UserMenu() {
-  const router = useRouter();
+  const { user, isLoading, logout, isAuthenticated } = useAuth();
   const { t } = useTranslation();
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        if (auth.isAuthenticated()) {
-          const userData = await auth.getCurrentUser();
-          setUser(userData);
-        }
-      } catch (error) {
-        console.error('Error checking auth:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -49,15 +23,9 @@ export function UserMenu() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await auth.logout();
-      setUser(null);
-      setIsOpen(false);
-      router.push('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+  const handleLogout = () => {
+    setIsOpen(false);
+    logout();
   };
 
   // Loading state
