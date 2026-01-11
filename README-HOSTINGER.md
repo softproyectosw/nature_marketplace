@@ -96,13 +96,39 @@ Generate a secret key (needs python3):
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 ```
 
-## 6) Start / rebuild with Docker Compose (production)
+## 6) Deploy / Update Application (CORRECT PROCESS)
+
+**IMPORTANT:** Always use `down` + `up` instead of just `up --build` to avoid 502 Bad Gateway errors caused by Docker network issues.
 
 ```bash
+cd /opt/nature_marketplace/nature_marketplace
+
+# 1. Pull latest changes
+git pull
+
+# 2. Stop all containers (this resets the Docker network)
+docker compose -f docker-compose.prod.yml down
+
+# 3. Start all containers (rebuilds images if needed)
 docker compose -f docker-compose.prod.yml up -d --build
+
+# 4. Wait for services to be ready (30 seconds)
+sleep 30
+
+# 5. Verify all containers are UP
+docker compose -f docker-compose.prod.yml ps
+
+# 6. Clear Django cache (prevents 429 throttling errors)
+docker compose -f docker-compose.prod.yml exec db psql -U nature_user -d nature_db -c "TRUNCATE TABLE django_cache_table;"
+
+# 7. Apply database migrations
+docker compose -f docker-compose.prod.yml exec backend python manage.py migrate
+
+# 8. Reseed database with demo data (optional, only if needed)
+docker compose -f docker-compose.prod.yml exec backend python manage.py seed_all --clear
 ```
 
-## 6.1) Create Django DB cache table (fix 500: django_cache_table missing)
+## 6.1) Create Django DB cache table (first time setup only)
 
 ```bash
 docker compose -f docker-compose.prod.yml exec backend python manage.py createcachetable

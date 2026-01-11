@@ -223,10 +223,10 @@ class Command(BaseCommand):
         self.stdout.write('\n📁 Creating categories...')
         
         categories_data = [
-            {'name': 'Bosque Vivo', 'slug': 'bosque-vivo', 'icon': 'forest', 'description': 'Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real', 'display_order': 1},
-            {'name': 'Guardianes del Agua', 'slug': 'guardianes-del-agua', 'icon': 'water', 'description': 'Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo', 'display_order': 2},
-            {'name': 'Economía del Corazón', 'slug': 'economia-del-corazon', 'icon': 'volunteer_activism', 'description': 'Apoya proyectos regenerativos y de educación ambiental', 'display_order': 3},
-            {'name': 'Micro-retreats', 'slug': 'micro-retreats', 'icon': 'hiking', 'description': 'Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar', 'display_order': 4},
+            {'name': 'Bosque Vivo', 'name_en': 'Living Forest', 'slug': 'bosque-vivo', 'icon': 'forest', 'description': 'Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real', 'description_en': 'Adopt a square meter of forest and track its growth in real time', 'display_order': 1},
+            {'name': 'Guardianes del Agua', 'name_en': 'Guardians of Water', 'slug': 'guardianes-del-agua', 'icon': 'water', 'description': 'Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo', 'description_en': 'Sponsor a body of water and receive stories from the territory you are protecting', 'display_order': 2},
+            {'name': 'Economía del Corazón', 'name_en': 'Heart Economy', 'slug': 'economia-del-corazon', 'icon': 'volunteer_activism', 'description': 'Apoya proyectos regenerativos y de educación ambiental', 'description_en': 'Support regenerative projects and environmental education', 'display_order': 3},
+            {'name': 'Micro-retreats', 'name_en': 'Micro-retreats', 'slug': 'micro-retreats', 'icon': 'hiking', 'description': 'Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar', 'description_en': 'Immersive experiences in living ecosystems, designed to reconnect', 'display_order': 4},
         ]
         
         categories = {}
