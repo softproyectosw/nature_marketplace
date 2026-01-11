@@ -18,6 +18,11 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, className }: ProductCardProps) {
+  const ratingValue = Number(product.rating);
+  const ratingText = Number.isFinite(ratingValue) ? ratingValue.toFixed(1) : '0.0';
+  const priceValue = Number(product.price);
+  const compareAtPriceValue = product.compare_at_price != null ? Number(product.compare_at_price) : null;
+
   return (
     <Link
       href={`/products/${product.slug}`}
@@ -94,7 +99,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
               star
             </span>
             <span className="text-sm text-white/70">
-              {product.rating.toFixed(1)}
+              {ratingText}
             </span>
             <span className="text-sm text-white/40">
               ({product.reviews_count})
@@ -113,11 +118,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Price */}
         <div className="flex items-center gap-2 pt-2">
           <span className="text-lg font-bold text-primary">
-            {formatPrice(product.price, product.currency)}
+            {formatPrice(priceValue, product.currency)}
           </span>
           {product.compare_at_price && (
             <span className="text-sm text-white/40 line-through">
-              {formatPrice(product.compare_at_price, product.currency)}
+              {compareAtPriceValue != null
+                ? formatPrice(compareAtPriceValue, product.currency)
+                : null}
             </span>
           )}
         </div>
