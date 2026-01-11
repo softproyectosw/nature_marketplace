@@ -21,10 +21,6 @@ function getProductImage(product: Product): string {
   return '/images/placeholder-product.jpg';
 }
 
-// Helper to get price label
-function getPriceLabel(product: Product): string {
-  return product.pricing_type === 'annual' ? '/año' : '';
-}
 
 // Helper to get category slug
 function getCategorySlug(product: Product, fallback: string): string {
