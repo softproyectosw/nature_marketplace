@@ -49,7 +49,11 @@
       "products": {
         "title": "Productos Naturales",
         "description": "Descubre productos sostenibles y ecológicos que hacen la diferencia."
-      }
+      },
+      "bosqueVivoDescription": "Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real.",
+      "guardianesDelAguaDescription": "Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo.",
+      "economiaDelCorazonDescription": "Apoya proyectos regenerativos y de educación ambiental.",
+      "microRetreatsDescription": "Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar."
     },
     "impact": {
       "title": "Nuestro Impacto Colectivo",
@@ -72,6 +76,10 @@
     "forests": "Bosques",
     "lagoons": "Lagunas",
     "experiences": "Experiencias",
+    "bosqueVivo": "Bosque Vivo",
+    "guardianesDelAgua": "Guardianes del Agua",
+    "economiaDelCorazon": "Economía del Corazón",
+    "microRetreats": "Micro-retreats",
     "retreats": "Retiros",
     "remedies": "Remedios",
     "addToCart": "Agregar",

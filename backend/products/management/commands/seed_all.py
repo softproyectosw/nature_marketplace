@@ -478,9 +478,20 @@ class Command(BaseCommand):
                 product.save(update_fields=['category'])
             
             if created:
+                from django.conf import settings
+
+                # NOTE: ProductImage.image_url is a URLField (default max_length=200).
+                # Some seed URLs can exceed that length and break the seed in Postgres.
+                # If USE_S3 is enabled, we skip creating external-URL images here and
+                # let `seed_images_to_minio` create/upload images later.
+                if getattr(settings, 'USE_S3', False):
+                    image_url_to_save = ''
+                else:
+                    image_url_to_save = (image_url or '')[:200]
+
                 ProductImage.objects.create(
                     product=product,
-                    image_url=image_url,
+                    image_url=image_url_to_save,
                     alt_text=prod_data['title'],
                     is_primary=True,
                     display_order=0

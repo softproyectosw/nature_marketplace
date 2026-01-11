@@ -338,8 +338,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">forest</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Bosque Vivo</h3>
-              <p className="text-white/60">(Adopta un metro cuadrado de bosque y sigue su crecimiento en tiempo real)</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.products.bosqueVivo}</h3>
+              <p className="text-white/60">({t.landing.features.bosqueVivoDescription})</p>
             </Link>
 
             <Link
@@ -349,8 +349,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">water</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Guardianes del Agua</h3>
-              <p className="text-white/60">(Apadrina un cuerpo de agua y recibe historias del territorio que estás protegiendo)</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.products.guardianesDelAgua}</h3>
+              <p className="text-white/60">({t.landing.features.guardianesDelAguaDescription})</p>
             </Link>
 
             <Link
@@ -360,8 +360,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">volunteer_activism</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Economía del Corazón</h3>
-              <p className="text-white/60">(Apoya proyectos regenerativos y de educación ambiental)</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.products.economiaDelCorazon}</h3>
+              <p className="text-white/60">({t.landing.features.economiaDelCorazonDescription})</p>
             </Link>
 
             <Link
@@ -371,8 +371,8 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <span className="material-symbols-outlined text-primary text-3xl">hiking</span>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Micro-retreats</h3>
-              <p className="text-white/60">(Experiencias inmersivas en ecosistemas vivos, diseñadas para reconectar.)</p>
+              <h3 className="text-xl font-semibold text-white mb-2">{t.products.microRetreats}</h3>
+              <p className="text-white/60">({t.landing.features.microRetreatsDescription})</p>
             </Link>
           </div>
         </div>

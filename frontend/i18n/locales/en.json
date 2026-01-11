@@ -49,7 +49,11 @@
       "products": {
         "title": "Natural Products",
         "description": "Discover sustainable, eco-friendly products that make a difference."
-      }
+      },
+      "bosqueVivoDescription": "Adopt a square meter of forest and follow its growth in real time.",
+      "guardianesDelAguaDescription": "Sponsor a body of water and receive stories from the territory you protect.",
+      "economiaDelCorazonDescription": "Support regenerative projects and environmental education.",
+      "microRetreatsDescription": "Immersive experiences in living ecosystems, designed to reconnect."
     },
     "impact": {
       "title": "Our Collective Impact",
@@ -72,6 +76,10 @@
     "forests": "Forests",
     "lagoons": "Lagoons",
     "experiences": "Experiences",
+    "bosqueVivo": "Living Forest",
+    "guardianesDelAgua": "Guardians of Water",
+    "economiaDelCorazon": "Heart Economy",
+    "microRetreats": "Micro-retreats",
     "retreats": "Retreats",
     "remedies": "Remedies",
     "addToCart": "Add",
