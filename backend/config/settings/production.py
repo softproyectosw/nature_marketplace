@@ -48,7 +48,7 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
 # =============================================================================
 
 # HTTPS Settings
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = os.environ.get('DJANGO_SECURE_SSL_REDIRECT', 'true').lower() == 'true'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # HSTS (HTTP Strict Transport Security)
