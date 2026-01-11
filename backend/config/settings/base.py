@@ -231,13 +231,14 @@ REST_FRAMEWORK = {
     ],
     
     # Throttling (rate limiting)
+    # Realistic limits for production use
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '1000/hour',
-        'user': '5000/hour',
+        'anon': os.environ.get('THROTTLE_ANON', '5000/hour'),
+        'user': os.environ.get('THROTTLE_USER', '10000/hour'),
     },
     
     # Schema generation
