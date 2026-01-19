@@ -146,34 +146,64 @@ Logs:
 docker compose -f docker-compose.prod.yml logs -f --tail=200
 ```
 
-## 7) Restrict the site to an IP allowlist (Nginx)
+## 7) Manage IP Allowlist (Nginx)
 
-Edit:
+### 7.1) Edit IP allowlist
 
 ```bash
-nano nginx/conf.d/default.conf
+cd /opt/nature_marketplace/nature_marketplace
+
+# Open Nginx config with vi
+vi nginx/conf.d/default.conf
 ```
 
-Inside each `server { ... }` block (80 and 443 if present):
+**Inside each `server { ... }` block** (both port 80 and 443 if present), add or remove IPs:
 
 ```nginx
-allow 186.87.10.59;
+# Allow specific IPs
+allow 186.87.10.59;      # Your office IP
+allow 203.0.113.45;      # Another allowed IP
+allow 192.168.1.0/24;    # Allow entire subnet
+
+# Block all other IPs
 deny all;
 ```
 
-Reload Nginx (container):
+**Vi editor quick commands:**
+- Press `i` to enter INSERT mode
+- Edit the IPs as needed
+- Press `ESC` to exit INSERT mode
+- Type `:wq` and press ENTER to save and quit
+- Type `:q!` and press ENTER to quit without saving
+
+### 7.2) Apply changes (reload Nginx without downtime)
 
 ```bash
+cd /opt/nature_marketplace/nature_marketplace
+
+# Reload Nginx configuration (no downtime)
 docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
 ```
 
-Test from your laptop (allowed IP):
-
-```bash
-curl -I http://82.180.160.167
+You should see:
+```
+2026/01/11 15:49:00 [notice] ... signal process started
 ```
 
-Note: `curl http://localhost` from inside the VPS will return 403 unless you also allow `127.0.0.1`.
+### 7.3) Verify IP allowlist is working
+
+```bash
+# View current IP allowlist configuration
+docker compose -f docker-compose.prod.yml exec nginx cat /etc/nginx/conf.d/default.conf | grep -A 10 "allow"
+
+# Test from your allowed IP (should return 200 OK)
+curl -I http://82.180.160.167
+
+# Test from VPS localhost (will return 403 unless 127.0.0.1 is allowed)
+curl -I http://localhost
+```
+
+**Note:** Changes take effect immediately after reload. No need to restart the container.
 
 ## 8) Delete the `deploy` user (optional)
 
